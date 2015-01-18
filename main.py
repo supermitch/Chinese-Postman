@@ -1,3 +1,4 @@
+import itertools
 import random
 
 import eularian
@@ -5,7 +6,13 @@ import my_math
 
 def make_eularian(graph):
     odd_nodes = eularian.find_odd_nodes(graph)
-    # todo: implement
+    print('Odd nodes: {}'.format(odd_nodes))
+    combos = itertools.combinations(sorted(odd_nodes), 2)
+    print('Combos: {}'.format(list(combos)))
+    pairs = [pair for pair in itertools.combinations(combos, 2) if \
+             pair[0][0] not in pair[1] and pair[0][1] not in pair[1]]
+    print('Possible pairs: {}'.format(list(pairs)))
+
     new_graph = graph
     return new_graph
 
