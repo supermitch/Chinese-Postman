@@ -22,9 +22,20 @@ def make_eularian(graph):
     print('Combos: {}'.format(list(combos)))
     # TODO: This doesn't really work for sets of more than 2! Fix it.
     # It sucks anyway.
+    path_set_a = []
+    for pair in itertools.combinations(combos, 2):
+        for node in pair[0]:
+            print(pair[0], node, pair[1])
+            if node in pair[1]:
+                continue
+            path_set_a.append(pair)
+    path_set_b = [pair for pair in itertools.combinations(combos, 2) if \
+                  not any(node in pair[1] for node in pair[0])]
     path_sets = [pair for pair in itertools.combinations(combos, 2) if \
              pair[0][0] not in pair[1] and pair[0][1] not in pair[1]]
     print('Possible pairs: {}'.format(list(path_sets)))
+    print('Possible pairs A: {}'.format(list(path_set_a)))
+    print('Possible pairs B: {}'.format(list(path_set_b)))
     # Now find the shortest distances from node to node for each pair
     costs = [find_set_cost(path_set, graph) for path_set in path_sets]
     print('Costs: {}'.format(list(costs)))
