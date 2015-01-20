@@ -1,7 +1,9 @@
 import itertools
 import random
 
+
 import eularian
+import graph
 import my_math
 
 
@@ -9,8 +11,7 @@ def flatten_tuples(iterable):
     """
     Flatten an iterable containing several tuples.
 
-    It works because you can add a tuple to another to extend them,
-    and sum can use the empty tuple () as the start value.
+    Sum all tuples, which "extends" them, with empty tuple as start value.
 
     """
     return sum(iterable, ())
@@ -25,15 +26,39 @@ def find_set_cost(path_set, graph):
     return sum(find_cost(path, graph) for path in path_set)
 
 def find_cost(path, graph):
-    """ Return minimum cost from start to end nodes. """
+    """ Return minimum cost from start to end nodes, using Dijkstra's. """
     start, end = path
     print('path: {}{}'.format(start, end))
-    # Implement Dijkstra's
+
+    all_nodes = eularian.find_nodes(graph)
+    # Initialize all nodes to total graph cost
+    node_costs = {node: find_total_cost(graph) for node in all_nodes}
+
+    current_node = start
+    visited = set(current_node)
+    node_costs[current_node] = 0
+
+    for node in all_nodes:
+        for option in find_possible_paths(node, graph):
+            next_node = option.strip(node)
+            if next_node in visited:
+                continue  # Don't go backwards
+            cost = gr.edge_cost(edge, graph)
+            if node_costs[next_node] > node_costs[node] + cost:
+                node_costs[next_node] = node_costs[node] + cost
+        visited.add(node)
+
+
+
+        
+
+    
     return 1
 
 def make_eularian(graph):
+    """ Add necessary paths to the graph such that it becomes Eularian. """
+
     odd_nodes = eularian.find_odd_nodes(graph)
-    print('Odd nodes: {}'.format(sorted(odd_nodes)))
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     print('Combos: {}'.format(list(combos)))
     # TODO: This doesn't really work for sets of more than 2! Fix it.
@@ -45,19 +70,15 @@ def make_eularian(graph):
                  if all_unique(flatten_tuples(path_set))]
     print('Possible pairs B: {}'.format(path_sets))
 
-    #              not any(node in [x for x in pair[1:] for node in pair[0])]
-    #path_sets = [pair for pair in itertools.combinations(combos, 2) if \
-    #         pair[0][0] not in pair[1] and pair[0][1] not in pair[1]]
-    #print('Possible pairs A: {}'.format(list(path_set_a)))
     # Now find the shortest distances from node to node for each pair
-#    costs = [find_set_cost(path_set, graph) for path_set in path_sets]
-#    print('Costs: {}'.format(list(costs)))
-#
-#    min_cost = min(costs)
-#    print('Minimum cost: {}'.format(min_cost))
-#    optimum_set = path_sets[costs.index(min(costs))]
-#    print('Optimum path set: {}'.format(optimum_set))
-#
+    costs = [find_set_cost(path_set, graph) for path_set in path_sets]
+    print('Costs: {}'.format(list(costs)))
+
+    min_cost = min(costs)
+    print('Minimum cost: {}'.format(min_cost))
+    optimum_set = path_sets[costs.index(min(costs))]
+    print('Optimum path set: {}'.format(optimum_set))
+
     new_graph = graph
     return new_graph
 

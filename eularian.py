@@ -1,21 +1,9 @@
+import graph as gr
 import my_math
-
-def find_possible_paths(node, graph):
-    """ Return a list of valid next moves if we are at a given node. """
-    return [edge for edge in graph if node in edge]
-
-def find_nodes(graph):
-    """ Return a set of all nodes in a given list of edges. """
-    return set([node for edge in graph for node in edge])
-
-def find_orders(graph):
-    """ Return a dictionary of node orders. """
-    nodes = find_nodes(graph)
-    return {node: len(find_possible_paths(node, graph)) for node in nodes}
 
 def find_odd_nodes(graph):
     """ Return a list of nodes of odd order. """
-    return [node for node, order in find_orders(graph).items() if \
+    return [node for node, order in gr.find_orders(graph).items() if \
             not my_math.is_even(order)]
 
 def attempt_eularian_path(graph):
@@ -28,12 +16,12 @@ def attempt_eularian_path(graph):
     import random
 
     segments = set(graph)
-    all_nodes = find_nodes(segments)
+    all_nodes = gr.find_nodes(segments)
 
     current_node = random.choice(list(all_nodes))
     route = []
     while segments:
-        options = find_possible_paths(current_node, segments)
+        options = gr.find_possible_paths(current_node, segments)
         if not options:  # Reached a dead end
             break
         chosen_path = random.choice(options)
@@ -68,7 +56,7 @@ def is_eularian(graph):
     A graph is Eularian if all nodes are even, or only two nodes are odd.
 
     """
-    orders = find_orders(graph) 
+    orders = gr.find_orders(graph) 
 
     if all(my_math.is_even(x) for x in orders.values()):
         return True 
