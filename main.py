@@ -3,7 +3,7 @@ import random
 
 
 import eularian
-import graph
+import graph as gr
 import my_math
 
 
@@ -23,37 +23,49 @@ def all_unique(iterable):
 
 def find_set_cost(path_set, graph):
     """ Find the total cost of a set of path options. """
-    return sum(find_cost(path, graph) for path in path_set)
+    return sum(find_cost(path, graph)[0] for path in path_set)
+
+def find_shortest_path(node_costs, previous_nodes):
+    """ Summarize results of Dijkstras, return shortest path. """
+    return 1, ['A', 'B', 'C', 'D']
 
 def find_cost(path, graph):
     """ Return minimum cost from start to end nodes, using Dijkstra's. """
     start, end = path
     print('path: {}{}'.format(start, end))
 
-    all_nodes = eularian.find_nodes(graph)
-    # Initialize all nodes to total graph cost
-    node_costs = {node: find_total_cost(graph) for node in all_nodes}
+    all_nodes = gr.find_nodes(graph)
+    unvisited = set(all_nodes)
+    # Initialize all nodes to total graph cost, at least
+    node_costs = {node: gr.find_total_cost(graph) for node in all_nodes}
+    node_costs[start] = 0
 
-    current_node = start
-    visited = set(current_node)
-    node_costs[current_node] = 0
+    previous_nodes = {node: None for node in all_nodes}
 
-    for node in all_nodes:
-        for option in find_possible_paths(node, graph):
+    node = start
+    while unvisited:  # While we still have unvisited nodes
+        for option in gr.find_possible_paths(node, graph):
             next_node = option.strip(node)
-            if next_node in visited:
+            if next_node not in unvisited:
                 continue  # Don't go backwards
-            cost = gr.edge_cost(edge, graph)
+            cost = gr.edge_cost(option, graph)
             if node_costs[next_node] > node_costs[node] + cost:
                 node_costs[next_node] = node_costs[node] + cost
-        visited.add(node)
+                previous_nodes[next_node] = node
+        unvisited.remove(node)
+        # Next node must be closest unvisited node:
+        options = {k:v for k, v in node_costs.items() if k in unvisited}
+        try:
+            node = min(options, key=options.get)
+        except ValueError:  # arg is empty sequence
+            break
+        if node == end:
+            break
 
+    print('node_costs: {}'.format(node_costs))
+    print('previous_nodes: {}'.format(previous_nodes))
 
-
-        
-
-    
-    return 1
+    return find_shortest_path(node_costs, previous_nodes)
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
@@ -61,8 +73,6 @@ def make_eularian(graph):
     odd_nodes = eularian.find_odd_nodes(graph)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     print('Combos: {}'.format(list(combos)))
-    # TODO: This doesn't really work for sets of more than 2! Fix it.
-    # It sucks anyway.
     no_of_sets = len(odd_nodes) / 2
 
     path_sets = [path_set for path_set in \
