@@ -25,9 +25,14 @@ def find_set_cost(path_set, graph):
     """ Find the total cost of a set of path options. """
     return sum(find_cost(path, graph)[0] for path in path_set)
 
-def find_shortest_path(node_costs, previous_nodes):
+def find_shortest_path(end, previous_nodes):
     """ Summarize results of Dijkstras, return shortest path. """
-    return 1, ['A', 'B', 'C', 'D']
+    route = []
+    prev = end
+    while prev:
+        route.append(prev)
+        prev = previous_nodes[prev]
+    return route
 
 def find_cost(path, graph):
     """ Return minimum cost from start to end nodes, using Dijkstra's. """
@@ -65,7 +70,12 @@ def find_cost(path, graph):
     print('node_costs: {}'.format(node_costs))
     print('previous_nodes: {}'.format(previous_nodes))
 
-    return find_shortest_path(node_costs, previous_nodes)
+    shortest_path = find_shortest_path(end, previous_nodes)
+    cost = node_costs[end]
+    print('shortest_path: {}'.format(shortest_path))
+    print('node_cost to {}: {}'.format(end, node_costs[end]))
+
+    return cost, shortest_path
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
