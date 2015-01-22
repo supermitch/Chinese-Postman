@@ -1,11 +1,6 @@
 import graph as gr
 import my_math
 
-def find_odd_nodes(graph):
-    """ Return a list of nodes of odd order. """
-    return [node for node, order in gr.find_orders(graph).items() if \
-            not my_math.is_even(order)]
-
 def attempt_eularian_path(graph):
     """
     Returns a Chinese-Postman perfect path, if one can be found.
@@ -56,22 +51,17 @@ def is_eularian(graph):
     A graph is Eularian if all nodes are even, or only two nodes are odd.
 
     """
-    orders = gr.find_orders(graph) 
-
-    if all(my_math.is_even(x) for x in orders.values()):
-        return True 
-    else:
-        return len(find_odd_nodes(graph)) == 2
+    return len(gr.find_odd_nodes(graph)) in (0, 2)
 
 def main():
     """ Run a test on a known Eularian graph. """
-    graph = {  # Eularian
-        'AB': 4,
-        'AC': 3,
-        'AD': 5,
-        'BC': 3,
-        'CD': 5,
-    }
+    graph = [  # Eularian
+        ('AB', 4),
+        ('AC', 3),
+        ('AD', 5),
+        ('BC', 3),
+        ('CD', 5),
+    ]
     if is_eularian(graph):
         print('Graph: {}'.format(graph))
         print('Graph is Eularian')

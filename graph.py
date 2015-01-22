@@ -2,18 +2,24 @@
 Generalized graph functions.
 
 """
+import my_math
 
 def find_total_cost(graph):
     """ Returns the sum of all edge costs. """
-    return sum(graph.values())
+    return sum(cost for _, cost in graph)
 
 def find_possible_paths(node, graph):
     """ Return a list of valid next moves if we are at a given node. """
-    return [edge for edge in graph if node in edge]
+    return [edge for edge, _ in graph if node in edge]
 
 def find_nodes(graph):
     """ Return a set of all nodes in a given graph. """
-    return set([node for edge in graph for node in edge])
+    return set([node for edge, _ in graph for node in edge])
+
+def find_odd_nodes(graph):
+    """ Return a list of nodes of odd order. """
+    return [node for node, order in find_orders(graph).items() if \
+            not my_math.is_even(order)]
 
 def find_orders(graph):
     """ Return a dictionary of node orders. """
@@ -22,10 +28,33 @@ def find_orders(graph):
 
 def edge_cost(edge, graph):
     """
-    Find the edge cost in the graph.
+    Find the edge cost in the graph, or return None if edge not found.
     
-    If neither 'AB' or 'BA' is in the graph, returns None.
+    Checks both 'AB' and 'BA' (undirected) edge names.
 
     """
-    return graph.get(edge, graph.get(edge[::-1], None))
+    for e, cost in graph:
+        if e in (edge, edge[::-1]):
+            return cost
+    return None
+
+def main():
+    """ Run a test on a known Eularian graph. """
+    graph = [  # Eularian
+        ('AB', 4),
+        ('AC', 3),
+        ('AD', 5),
+        ('BC', 3),
+        ('CD', 5),
+    ]
+    print('Graph: {}'.format(graph))
+    print('Total cost: {}'.format(find_total_cost(graph)))
+    print('All nodes: {}'.format(find_nodes(graph)))
+    print('Odd nodes: {}'.format(find_odd_nodes(graph)))
+    print('All orders: {}'.format(find_orders(graph)))
+    print('Possible paths for C: {}'.format(find_possible_paths('C', graph)))
+    print('Cost for AB: {}'.format(edge_cost('AB', graph)))
+
+if __name__ == '__main__':
+    main()
 
