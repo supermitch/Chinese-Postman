@@ -33,13 +33,12 @@ def find_shortest_path(end, previous_nodes):
 def find_cost(path, graph):
     """ Return minimum cost from start to end nodes, using Dijkstra's. """
     start, end = path
-    print('path: {}{}'.format(start, end))
 
     all_nodes = gr.find_nodes(graph)
     unvisited = set(all_nodes)
-    # Initialize all nodes to total graph cost, at least
+    # Initialize all nodes to total graph cost (at least)
     node_costs = {node: gr.find_total_cost(graph) for node in all_nodes}
-    node_costs[start] = 0
+    node_costs[start] = 0  # Start has zero cost
 
     previous_nodes = {node: None for node in all_nodes}
 
@@ -57,6 +56,7 @@ def find_cost(path, graph):
         # Next node must be closest unvisited node:
         options = {k:v for k, v in node_costs.items() if k in unvisited}
         try:
+            # Find key of minimum value in a dictionary
             node = min(options, key=options.get)
         except ValueError:  # arg is empty sequence, aka dead ended
             break
@@ -109,6 +109,17 @@ def make_eularian(graph):
     min_route = set_routes[set_costs.index(min_cost)]
     print('Min path routes: {}'.format(min_route))
 
+    # Now we modify our graph so that it contains the new edges
+    new_edges = []
+    costs = []
+    for path in min_route:
+        for i in len(path) - 1:
+            edge = path[i] + path[i + 1]
+            cost = edge_cost(edge, graph))  # Look up that edge cost
+            # This obviously won't work, since graph is a dictionary!
+            # TODO: Turn new_graph into a list
+            new_graph[edge] = cost
+        
     new_graph = graph
     return new_graph
 
