@@ -21,16 +21,12 @@ def all_unique(iterable):
     seen = set()
     return not any (i in seen or seen.add(i) for i in iterable)
 
-def find_set_cost(path_set, graph):
-    """ Find the total cost of a set of path options. """
-    return sum(find_cost(path, graph)[0] for path in path_set)
-
 def find_shortest_path(end, previous_nodes):
     """ Summarize results of Dijkstras, return shortest path. """
     route = []
     prev = end
     while prev:
-        route.append(prev)
+        route.insert(0, prev)  # At beginning
         prev = previous_nodes[prev]
     return route
 
@@ -62,9 +58,9 @@ def find_cost(path, graph):
         options = {k:v for k, v in node_costs.items() if k in unvisited}
         try:
             node = min(options, key=options.get)
-        except ValueError:  # arg is empty sequence
+        except ValueError:  # arg is empty sequence, aka dead ended
             break
-        if node == end:
+        if node == end:  # Since we're pathfinding, we can exit early
             break
 
     print('node_costs: {}'.format(node_costs))
@@ -77,9 +73,14 @@ def find_cost(path, graph):
 
     return cost, shortest_path
 
+def find_set_cost(path_set, graph):
+    """ Find the cost and route for each path in a set of path options. """
+    return {path: find_cost(path, graph) for path in path_set}
+
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
 
+    # First build all possible additional odd node edge combos
     odd_nodes = eularian.find_odd_nodes(graph)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     print('Combos: {}'.format(list(combos)))
@@ -90,14 +91,23 @@ def make_eularian(graph):
                  if all_unique(flatten_tuples(path_set))]
     print('Possible pairs B: {}'.format(path_sets))
 
-    # Now find the shortest distances from node to node for each pair
-    costs = [find_set_cost(path_set, graph) for path_set in path_sets]
-    print('Costs: {}'.format(list(costs)))
+    # Now find the costs of all these sets of paths
+    set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
+    print('Solutions: {}'.format(set_solutions))
+    
+    set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
+    print('Set costs: {}'.format(set_costs))
+    
+    set_routes = [list(v[1] for v in paths.values()) for paths in set_solutions]
+    print('Set routes: {}'.format(set_routes))
 
-    min_cost = min(costs)
-    print('Minimum cost: {}'.format(min_cost))
-    optimum_set = path_sets[costs.index(min(costs))]
-    print('Optimum path set: {}'.format(optimum_set))
+    # Now find the shortest distances from node to node for each pair
+    min_cost = min(set_costs)
+    print('Min cost: {}'.format(min_cost))
+    min_set = path_sets[set_costs.index(min_cost)]
+    print('Min path set: {}'.format(min_set))
+    min_route = set_routes[set_costs.index(min_cost)]
+    print('Min path routes: {}'.format(min_route))
 
     new_graph = graph
     return new_graph
