@@ -13,7 +13,7 @@ def find_cost(path, graph):
     """ Return minimum cost from start to end nodes, using Dijkstra's. """
     start, end = path
 
-    all_nodes = gr.find_nodes(graph)
+    all_nodes = gr.all_nodes(graph)
     unvisited = set(all_nodes)
     # Initialize all nodes to total graph cost (at least)
     node_costs = {node: gr.find_total_cost(graph) for node in all_nodes}

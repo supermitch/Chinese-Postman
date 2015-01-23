@@ -29,7 +29,7 @@ def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
 
     # First build all possible additional odd node edge combos
-    odd_nodes = eularian.find_odd_nodes(graph)
+    odd_nodes = gr.find_odd_nodes(graph)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     print('Combos: {}'.format(list(combos)))
     no_of_sets = len(odd_nodes) / 2
@@ -67,8 +67,9 @@ def make_eularian(graph):
             cost = gr.edge_cost(edge, graph)  # Look up that edge cost
             # This obviously won't work, since graph is a dictionary!
             # TODO: Turn new_graph into a list
-            new_graph[edge] = cost
+            new_graph.append((edge, cost))
         
+    print('New graph: {}'.format(new_graph))
     return new_graph
 
 def main():
@@ -88,20 +89,20 @@ def main():
         'CD': 3,
         'DE': 9,
     }
-    graph = {
-        'AB': 8,
-        'AE': 4,
-        'AH': 3,
-        'BC': 9,
-        'BG': 6,
-        'CD': 5,
-        'CF': 3,
-        'DE': 5,
-        'DF': 1,
-        'EF': 2,
-        'EG': 3,
-        'GH': 1,
-    }
+    graph = [
+        ('AB', 8),
+        ('AE', 4),
+        ('AH', 3),
+        ('BC', 9),
+        ('BG', 6),
+        ('CD', 5),
+        ('CF', 3),
+        ('DE', 5),
+        ('DF', 1),
+        ('EF', 2),
+        ('EG', 3),
+        ('GH', 1),
+    ]
 
     if not eularian.is_eularian(graph):
         graph = make_eularian(graph)

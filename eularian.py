@@ -54,6 +54,8 @@ def is_eularian(graph):
     A graph is Eularian if all nodes are even, or only two nodes are odd.
 
     """
+    print(gr.find_odd_nodes(graph))
+    print(len(gr.find_odd_nodes(graph)))
     return len(gr.find_odd_nodes(graph)) in (0, 2)
 
 def main():
