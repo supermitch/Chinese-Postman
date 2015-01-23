@@ -1,3 +1,5 @@
+import copy
+
 import graph as gr
 import my_math
 
@@ -10,18 +12,19 @@ def attempt_eularian_path(graph):
     """
     import random
 
-    segments = set(graph)
-    all_nodes = gr.find_nodes(segments)
+    segments = set(gr.all_edges(graph))
+    all_nodes = gr.all_nodes(graph)
 
     current_node = random.choice(list(all_nodes))
     route = []
     while segments:
-        options = gr.find_possible_paths(current_node, segments)
+        options = [x for x in gr.find_possible_paths(current_node, graph) \
+                   if x in segments]
         if not options:  # Reached a dead end
             break
         chosen_path = random.choice(options)
-        next_node = chosen_path.strip(current_node)  # Get the other node
-        segments.discard(chosen_path)  # Remove after traversing
+        next_node = chosen_path.strip(current_node)  # Get the other end
+        segments.remove(chosen_path)  # Remove after traversing
         route.append('{}{}'.format(current_node, next_node))
         current_node = next_node
 

@@ -8,11 +8,15 @@ def find_total_cost(graph):
     """ Returns the sum of all edge costs. """
     return sum(cost for _, cost in graph)
 
+def all_edges(graph):
+    """ Return a list of all edges in the graph. """
+    return [edge for edge, _ in graph]
+
 def find_possible_paths(node, graph):
     """ Return a list of valid next moves if we are at a given node. """
     return [edge for edge, _ in graph if node in edge]
 
-def find_nodes(graph):
+def all_nodes(graph):
     """ Return a set of all nodes in a given graph. """
     return set([node for edge, _ in graph for node in edge])
 
@@ -23,7 +27,7 @@ def find_odd_nodes(graph):
 
 def find_orders(graph):
     """ Return a dictionary of node orders. """
-    nodes = find_nodes(graph)
+    nodes = all_nodes(graph)
     return {node: len(find_possible_paths(node, graph)) for node in nodes}
 
 def edge_cost(edge, graph):
@@ -49,7 +53,7 @@ def main():
     ]
     print('Graph: {}'.format(graph))
     print('Total cost: {}'.format(find_total_cost(graph)))
-    print('All nodes: {}'.format(find_nodes(graph)))
+    print('All nodes: {}'.format(all_nodes(graph)))
     print('Odd nodes: {}'.format(find_odd_nodes(graph)))
     print('All orders: {}'.format(find_orders(graph)))
     print('Possible paths for C: {}'.format(find_possible_paths('C', graph)))
