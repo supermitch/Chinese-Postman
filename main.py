@@ -57,17 +57,15 @@ def make_eularian(graph):
     min_route = set_routes[set_costs.index(min_cost)]
     print('Min path routes: {}'.format(min_route))
 
-    # Now we modify our graph so that it contains the new edges
+    # Now modify our graph so that it contains the new edges
     new_graph = copy.copy(graph)
     new_edges = []
     costs = []
     for path in min_route:
         for i in range(len(path) - 1):
             edge = path[i] + path[i + 1]
-            cost = gr.edge_cost(edge, graph)  # Look up that edge cost
-            # This obviously won't work, since graph is a dictionary!
-            # TODO: Turn new_graph into a list
-            new_graph.append((edge, cost))
+            cost = gr.edge_cost(edge, graph)  # Look up existing edge cost
+            new_graph.append((edge, cost))  # Append new edges
         
     print('New graph: {}'.format(new_graph))
     return new_graph
@@ -102,6 +100,14 @@ def main():
         ('EF', 2),
         ('EG', 3),
         ('GH', 1),
+    ]
+    graph = [
+        ('AB', 4),
+        ('BC', 3),
+        ('CD', 2),
+        ('BD', 3),
+        ('ED', 2),
+        ('AD', 3),
     ]
 
     if not eularian.is_eularian(graph):
