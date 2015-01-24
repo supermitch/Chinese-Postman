@@ -3,6 +3,12 @@
 I wrote this program to solve the
 [Chinese Postman problem](http://en.wikipedia.org/wiki/Route_inspection_problem).
 
+Described as:
+
+> The **Chinese Postman Problem**, or "route inspection problem"
+> is to find a shortest closed circuit that visits every edge of a
+> (connected) undirected graph.
+
 The solution is roughly a three-step process:
 
 1. Determine if the graph has an [Eularian Path](http://en.wikipedia.org/wiki/Eulerian_path)
@@ -11,6 +17,25 @@ The solution is roughly a three-step process:
     (Not so easy)
 3. Find the fudged Eularian path
     (Pretty easy)
+
+## Solving minimum expense
+
+In order to convert a non- or semi-Eularian graph to an Eularian one,
+you must eliminate odd nodes (nodes having an odd number of edges.)
+
+To eliminate an odd node, you need to add another edge to it (essentially
+retracing your steps.) However, this comes as a cost! The goal then is
+to find out which edges to repeat, that eliminate all the odd nodes, with
+the minimum cost.
+
+1. Find all possible combinations of odd nodes
+2. Using Dijkstra's Algorithm, find the cost of the minimum path between
+odd nodes
+3. Find the entire set of paths that results in the least cost
+4. Modify your graph with the new parallel edges
+
+Now you have an Eularian graph with only even nodes, for which an Eularian
+Circuit can be found.
 
 ## To run
 

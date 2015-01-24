@@ -6,21 +6,49 @@ import dijkstra
 import eularian
 import graph as gr
 import my_math
+import my_iter
 
-def flatten_tuples(iterable):
-    """
-    Flatten an iterable containing several tuples.
 
-    Sum all tuples, which "extends" them, with empty tuple as start value.
+def build_path_sets(graph):
+    """ Builds all possible sets of odd node pairs. """
+    # First build all possible additional odd node edge combos
+    odd_nodes = gr.find_odd_nodes(graph)
+    combos = list(itertools.combinations(sorted(odd_nodes), 2))
+    no_of_sets = len(odd_nodes) / 2
 
-    """
-    return sum(iterable, ())
+    path_sets = [path_set for path_set in \
+                 itertools.combinations(combos, no_of_sets) \
+                 if my_iter.all_unique(my_iter.flatten_tuples(path_set))]
+    return path_sets
 
-def all_unique(iterable):
-    """ Returns True if all items in an iterable are unique. """
-    seen = set()
-    return not any (i in seen or seen.add(i) for i in iterable)
+def find_set_solutions(path_sets, graph):
+    """ Return path and cost for all paths in the path sets. """
+    set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
+    
+    set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
+    
+    set_routes = [list(v[1] for v in paths.values()) for paths in set_solutions]
 
+    return set_routes, set_costs
+
+def find_minimum_path_set(path_sets, set_routes, set_costs):
+    """ Find the cheapest of all the path set solutions. """
+    min_cost = min(set_costs)
+    min_set = path_sets[set_costs.index(min_cost)]
+    min_route = set_routes[set_costs.index(min_cost)]
+    return min_route
+
+def add_new_edges(graph, min_route):
+    """ Return new graph w/ new edges extracted from minimum route. """
+    new_edges = []
+    for node in min_route:
+        for i in range(len(node) - 1):
+            edge = node[i] + node[i + 1]
+            cost = gr.edge_cost(edge, graph)  # Look up existing edge cost
+            new_edges.append((edge, cost))  # Append new edges
+    return graph + new_edges
+        
+    print('New graph: {}'.format(new_graph))
 def find_set_cost(path_set, graph):
     """ Find the cost and route for each path in a set of path options. """
     return {path: dijkstra.find_cost(path, graph) for path in path_set}
@@ -28,46 +56,14 @@ def find_set_cost(path_set, graph):
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
 
-    # First build all possible additional odd node edge combos
-    odd_nodes = gr.find_odd_nodes(graph)
-    combos = list(itertools.combinations(sorted(odd_nodes), 2))
-    print('Combos: {}'.format(list(combos)))
-    no_of_sets = len(odd_nodes) / 2
+    path_sets = build_path_sets(graph)  # Get all possible added path sets
 
-    path_sets = [path_set for path_set in \
-                 itertools.combinations(combos, no_of_sets) \
-                 if all_unique(flatten_tuples(path_set))]
-    print('Possible pairs B: {}'.format(path_sets))
+    set_routes, set_costs = find_set_solutions(path_sets, graph)
 
-    # Now find the costs of all these sets of paths
-    set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
-    print('Solutions: {}'.format(set_solutions))
-    
-    set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
-    print('Set costs: {}'.format(set_costs))
-    
-    set_routes = [list(v[1] for v in paths.values()) for paths in set_solutions]
-    print('Set routes: {}'.format(set_routes))
+    min_route = find_minimum_path_set(path_sets, set_routes, set_costs)
 
-    # Now find the shortest distances from node to node for each pair
-    min_cost = min(set_costs)
-    print('Min cost: {}'.format(min_cost))
-    min_set = path_sets[set_costs.index(min_cost)]
-    print('Min path set: {}'.format(min_set))
-    min_route = set_routes[set_costs.index(min_cost)]
-    print('Min path routes: {}'.format(min_route))
+    new_graph = add_new_edges(graph, min_route)  # Add our new edges
 
-    # Now modify our graph so that it contains the new edges
-    new_graph = copy.copy(graph)
-    new_edges = []
-    costs = []
-    for path in min_route:
-        for i in range(len(path) - 1):
-            edge = path[i] + path[i + 1]
-            cost = gr.edge_cost(edge, graph)  # Look up existing edge cost
-            new_graph.append((edge, cost))  # Append new edges
-        
-    print('New graph: {}'.format(new_graph))
     return new_graph
 
 def main():
