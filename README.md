@@ -28,11 +28,12 @@ retracing your steps.) However, this comes as a cost! The goal then is
 to find out which edges to repeat, that eliminate all the odd nodes, with
 the minimum cost.
 
-1. Find all possible combinations of odd nodes
+1. Find all possible combinations of pairs of odd nodes
 2. Using Dijkstra's Algorithm, find the cost of the minimum path between
-odd nodes
-3. Find the entire set of paths that results in the least cost
-4. Modify your graph with the new parallel edges
+those pairs
+3. Find which set of paths (depending on how many odd nodes you have)
+that results in the least total cost
+4. Modify your graph with these new parallel edges
 
 Now you have an Eularian graph with only even nodes, for which an Eularian
 Circuit can be found.
