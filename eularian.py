@@ -12,7 +12,7 @@ def attempt_eularian_path(graph):
     """
     import random
 
-    segments = set(gr.all_edges(graph))
+    segments = gr.all_edges(graph)
     all_nodes = gr.all_nodes(graph)
 
     current_node = random.choice(list(all_nodes))
@@ -24,7 +24,11 @@ def attempt_eularian_path(graph):
             break
         chosen_path = random.choice(options)
         next_node = chosen_path.strip(current_node)  # Get the other end
-        segments.remove(chosen_path)  # Remove after traversing
+        for i, path in enumerate(segments[:]):
+            if path == chosen_path:
+                del segments[i]
+                break
+        #segments.remove(chosen_path)  # Remove after traversing
         route.append('{}{}'.format(current_node, next_node))
         current_node = next_node
 
