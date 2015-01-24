@@ -1,7 +1,12 @@
+"""
+Minimum Cost Path solver using Dijkstra's Algorithm.
+
+"""
+
 import graph as gr
 
 def find_shortest_path(end, previous_nodes):
-    """ Summarize results of Dijkstras, return shortest path. """
+    """ Summarize a chain of previous nodes and return path. """
     route = []
     prev = end
     while prev:
@@ -10,7 +15,12 @@ def find_shortest_path(end, previous_nodes):
     return route
 
 def find_cost(path, graph):
-    """ Return minimum cost from start to end nodes, using Dijkstra's. """
+    """
+    Return minimum cost and route from start to end nodes.
+
+    Uses Dijkstra's algorithm to find shortest path.
+
+    """
     start, end = path
 
     all_nodes = gr.all_nodes(graph)
@@ -28,6 +38,7 @@ def find_cost(path, graph):
             if next_node not in unvisited:
                 continue  # Don't go backwards
             cost = gr.edge_cost(option, graph)
+            # If this path was cheaper than the prior cost, update it
             if node_costs[next_node] > node_costs[node] + cost:
                 node_costs[next_node] = node_costs[node] + cost
                 previous_nodes[next_node] = node
@@ -36,18 +47,14 @@ def find_cost(path, graph):
         options = {k:v for k, v in node_costs.items() if k in unvisited}
         try:
             # Find key of minimum value in a dictionary
-            node = min(options, key=options.get)
+            node = min(options, key=options.get)  # Get nearest new node
         except ValueError:  # arg is empty sequence, aka dead ended
             break
         if node == end:  # Since we're pathfinding, we can exit early
             break
 
-    print('node_costs: {}'.format(node_costs))
-    print('previous_nodes: {}'.format(previous_nodes))
-
-    shortest_path = find_shortest_path(end, previous_nodes)
     cost = node_costs[end]
-    print('shortest_path: {}'.format(shortest_path))
-    print('node_cost to {}: {}'.format(end, node_costs[end]))
+    shortest_path = find_shortest_path(end, previous_nodes)
 
     return cost, shortest_path
+
