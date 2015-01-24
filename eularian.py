@@ -52,13 +52,12 @@ def eularian_path(graph):
     return route, attempts
 
 def is_eularian(graph):
-    """
-    Return True if a graph is Eularian, else False.
+    """ Return True if a graph has zero odd nodes. """
+    return not gr.find_odd_nodes(graph)
 
-    A graph is Eularian if all nodes are even, or only two nodes are odd.
-
-    """
-    return len(gr.find_odd_nodes(graph)) in (0, 2)
+def is_semi_eularian(graph):
+    """ Return True if graph has exactly two odd nodes. """
+    return len(gr.find_odd_nodes(graph)) == 2
 
 def main():
     """ Run a test on a known Eularian graph. """
