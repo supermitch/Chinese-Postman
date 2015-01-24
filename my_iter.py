@@ -1,3 +1,8 @@
+"""
+Iterator related helper functions.
+
+"""
+
 def flatten_tuples(iterable):
     """
     Flatten an iterable containing several tuples.

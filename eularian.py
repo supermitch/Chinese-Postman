@@ -1,21 +1,31 @@
+"""
+Functions relating to Eularian graphs.
+
+This module contains functions relating to the identification
+and solution of Eularian trails and Circuits.
+
+"""
 import copy
+import random
 
 import graph as gr
 import my_math
 
-def attempt_eularian_path(graph):
+def random_walk_graph(graph, start=None):
     """
-    Returns a Chinese-Postman perfect path, if one can be found.
+    Return an attempt at walking the edges of a graph.
     
-    Randomly tries to solve an Eularian graph.
+    Tries to walk a Circuit by making random edge choices. If the route
+    dead-ends, returns the route up to that point. Does not revisit
+    edges.
     
     """
-    import random
-
     segments = gr.all_edges(graph)
-    all_nodes = gr.all_nodes(graph)
-
-    current_node = random.choice(list(all_nodes))
+    if start:
+        current_node = start
+    else:  # Choose a node at random
+        current_node = random.choice(tuple(gr.all_nodes(graph)))
+        
     route = []
     while segments:
         options = [x for x in gr.find_possible_paths(current_node, graph) \
@@ -23,33 +33,28 @@ def attempt_eularian_path(graph):
         if not options:  # Reached a dead end
             break
         chosen_path = random.choice(options)
+        segments.remove(chosen_path)  # Never revisit this edge
         next_node = chosen_path.strip(current_node)  # Get the other end
-        for i, path in enumerate(segments[:]):
-            if path == chosen_path:
-                del segments[i]
-                break
-        #segments.remove(chosen_path)  # Remove after traversing
         route.append('{}{}'.format(current_node, next_node))
         current_node = next_node
 
     return route
 
-def eularian_path(graph):
+def eularian_path(graph, start=None):
     """
-    Find a path through a Eularian graph.
-    
-    Function gives up after 1000 tries.
+    Return an Eularian Trail or Eularian Circuit through a graph, if found.
+
+    Return the route if it visits every edge, else give up after 1000 tries.
+
+    If `start` is set, force start at that Node.
+
     """
-    route = []
-    attempts = 0
-    while len(route) < len(graph):
-        route = attempt_eularian_path(graph)
-        attempts += 1
-        if attempts == 1000:
-            # todo: How do we know we checked all possible solutions?
-            route = []
-            break  # Can't find a solution?
-    return route, attempts
+    # TODO: How do we know we checked all possible solutions?
+    for i in range(1, 1001):
+        route = random_walk_graph(graph, start)
+        if len(route) == len(graph):  # We visited every edge
+            return route, i
+    return [], i
 
 def is_eularian(graph):
     """ Return True if a graph has zero odd nodes. """
@@ -68,10 +73,10 @@ def main():
         ('BC', 3),
         ('CD', 5),
     ]
-    if is_eularian(graph):
+    if is_semi_eularian(graph):
         print('Graph: {}'.format(graph))
-        print('Graph is Eularian')
-        route, attempts = eularian_path(graph)
+        print('Graph is semi-Eularian')
+        route, attempts = eularian_path(graph, start='A')
         print('Solution in {} attempts: {}'.format(attempts, route))
     else:
         print('Non-Eularian graph, cannot solve.')

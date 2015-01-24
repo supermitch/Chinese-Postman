@@ -11,15 +11,19 @@ import my_iter
 
 def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
-    # First build all possible additional odd node edge combos
     odd_nodes = gr.find_odd_nodes(graph)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     no_of_sets = len(odd_nodes) / 2
 
+    # Every pair in a set of paths must have unique nodes
     path_sets = [path_set for path_set in \
                  itertools.combinations(combos, no_of_sets) \
                  if my_iter.all_unique(my_iter.flatten_tuples(path_set))]
     return path_sets
+
+def find_set_cost(path_set, graph):
+    """ Find the cost and route for each path in a set of path options. """
+    return {path: dijkstra.find_cost(path, graph) for path in path_set}
 
 def find_set_solutions(path_sets, graph):
     """ Return path and cost for all paths in the path sets. """
@@ -49,9 +53,6 @@ def add_new_edges(graph, min_route):
     return graph + new_edges
         
     print('New graph: {}'.format(new_graph))
-def find_set_cost(path_set, graph):
-    """ Find the cost and route for each path in a set of path options. """
-    return {path: dijkstra.find_cost(path, graph) for path in path_set}
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
@@ -67,22 +68,22 @@ def make_eularian(graph):
     return new_graph
 
 def main():
-    graph = {  # Eularian
-        'AB': 4,
-        'AC': 3,
-        'AD': 5,
-        'BC': 3,
-        'CD': 5,
-    }
-    graph = {  # Non-Eularian
-        'AB': 4,
-        'AC': 3,
-        'AE': 10,
-        'BC': 2,
-        'BD': 3,
-        'CD': 3,
-        'DE': 9,
-    }
+    graph = [  # Eularian
+        ('AB', 4),
+        ('AC', 3),
+        ('AD', 5),
+        ('BC', 3),
+        ('CD', 5),
+    ]
+    graph = [  # Non-Eularian
+        ('AB', 4),
+        ('AC', 3),
+        ('AE', 10),
+        ('BC', 2),
+        ('BD', 3),
+        ('CD', 3),
+        ('DE', 9),
+    ]
     graph = [
         ('AB', 8),
         ('AE', 4),
@@ -103,13 +104,13 @@ def main():
         ('CD', 2),
         ('BD', 3),
         ('ED', 2),
-        ('AD', 3),
+        ('DA', 3),
     ]
 
     if not eularian.is_eularian(graph):
         graph = make_eularian(graph)
 
-    route, attempts = eularian.eularian_path(graph)
+    route, attempts = eularian.eularian_path(graph, start='A')
     if not route:
         print('{} attempts: No solution found'.format(attempts))
     else:

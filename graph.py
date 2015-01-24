@@ -1,6 +1,9 @@
 """
 Generalized graph functions.
 
+A graph data structure is a list of (edge, cost) tuples, where edge is a
+start-end string of nodes, e.g. ('AB', 5).
+
 """
 import my_math
 
