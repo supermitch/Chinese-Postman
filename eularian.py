@@ -14,18 +14,18 @@ import my_math
 def random_walk_graph(graph, start=None):
     """
     Return an attempt at walking the edges of a graph.
-    
+
     Tries to walk a Circuit by making random edge choices. If the route
     dead-ends, returns the route up to that point. Does not revisit
     edges.
-    
+
     """
     segments = gr.all_edges(graph)
     if start:
         current_node = start
     else:  # Choose a node at random
         current_node = random.choice(tuple(gr.all_nodes(graph)))
-        
+
     route = []
     while segments:
         options = [x for x in gr.find_possible_paths(current_node, graph) \

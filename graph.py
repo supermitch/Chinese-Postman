@@ -36,7 +36,7 @@ def find_orders(graph):
 def edge_cost(edge, graph):
     """
     Find the edge cost in the graph, or return None if edge not found.
-    
+
     Checks both 'AB' and 'BA' (undirected) edge names.
 
     """

@@ -28,9 +28,9 @@ def find_set_cost(path_set, graph):
 def find_set_solutions(path_sets, graph):
     """ Return path and cost for all paths in the path sets. """
     set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
-    
+
     set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
-    
+
     set_routes = [list(v[1] for v in paths.values()) for paths in set_solutions]
 
     return set_routes, set_costs
@@ -51,7 +51,7 @@ def add_new_edges(graph, min_route):
             cost = gr.edge_cost(edge, graph)  # Look up existing edge cost
             new_edges.append((edge, cost))  # Append new edges
     return graph + new_edges
-        
+
     print('New graph: {}'.format(new_graph))
 
 def make_eularian(graph):
@@ -106,6 +106,8 @@ def main():
         ('ED', 2),
         ('DA', 3),
     ]
+    from graphs import (north, golf)
+    graph = north.graph
 
     if not eularian.is_eularian(graph):
         graph = make_eularian(graph)
