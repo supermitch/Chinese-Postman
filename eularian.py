@@ -41,14 +41,14 @@ def random_walk_graph(graph, start=None, circuit=False):
             chosen_path = random.choice(bridges)
         else:
             break  # Reached a dead-end
-        next_node = chosen_path.strip(current_node)  # Get the other end
+        next_node = gr.end_node(current_node, chosen_path)  # The other end
         segments.remove(chosen_path)  # Never revisit this edge
         route.append('{}{}'.format(current_node, next_node))
         current_node = next_node
 
     return route
 
-def eularian_path(graph, start=None):
+def eularian_path(graph, start=None, circuit=False):
     """
     Return an Eularian Trail or Eularian Circuit through a graph, if found.
 
@@ -59,7 +59,7 @@ def eularian_path(graph, start=None):
     """
     # TODO: How do we know we checked all possible solutions?
     for i in range(1, 1001):
-        route = random_walk_graph(graph, start)
+        route = random_walk_graph(graph, start, circuit)
         if len(route) == len(graph):  # We visited every edge
             return route, i
     return [], i

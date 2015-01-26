@@ -5,6 +5,8 @@ A graph data structure is a list of (edge, cost) tuples, where edge is a
 start-end string of nodes, e.g. ('AB', 5).
 
 """
+import random
+
 import my_math
 
 def find_total_cost(graph):
@@ -27,6 +29,10 @@ def find_odd_nodes(graph):
     """ Return a list of nodes of odd order. """
     return [node for node, order in find_orders(graph).items() if \
             not my_math.is_even(order)]
+
+def end_node(node, edge):
+    """ Returns the other end of an edge. """
+    return edge.strip(node)
 
 def find_orders(graph):
     """ Return a dictionary of node orders. """
@@ -52,6 +58,36 @@ def is_bridge(edge, graph, segments=None):
     Given a graph and (optional) unvisited segments.
 
     """
+    print(edge, graph, segments)
+    start = random.choice(edge)
+
+    stack = []
+    visited = []
+    while True:
+        stack.append(start)
+        visited.append(start)
+        edge_options = [x for x in find_possible_paths(start, graph) if x in segments]
+        adjacent_nodes = sorted([end_node(start, edge) for edge in options])
+        node_options = [x for x in adjacent_nodes if x not in visited]
+        if node_options:
+            print(next_nodes)
+            start = next_nodes[0]  # Alphabetical, for now
+        else:
+            try:
+                start = stack.pop()
+            except IndexError:
+                break
+    # TODO: This is wrong...
+    if len(visited) == len(gr.all_nodes(graph)):
+        return False
+    else:
+        return True
+
+    # choose one node on the edge
+    # from that node, explore every connected edge, minus
+    # removed segments
+    # if we visit every edge node in the graph, we
+    # are not a bridge
     return False
 
 def main():
