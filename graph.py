@@ -45,6 +45,15 @@ def edge_cost(edge, graph):
             return cost
     return None
 
+def is_bridge(edge, graph, segments=None):
+    """
+    Return True if an edge is a bridge.
+
+    Given a graph and (optional) unvisited segments.
+
+    """
+    return False
+
 def main():
     """ Run a test on a known Eularian graph. """
     graph = [  # Eularian

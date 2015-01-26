@@ -11,13 +11,15 @@ import random
 import graph as gr
 import my_math
 
-def random_walk_graph(graph, start=None):
+def random_walk_graph(graph, start=None, circuit=False):
     """
     Return an attempt at walking the edges of a graph.
 
     Tries to walk a Circuit by making random edge choices. If the route
     dead-ends, returns the route up to that point. Does not revisit
     edges.
+
+    If circuit is True, route must start & end at the same node.
 
     """
     segments = gr.all_edges(graph)
@@ -28,13 +30,19 @@ def random_walk_graph(graph, start=None):
 
     route = []
     while segments:
-        options = [x for x in gr.find_possible_paths(current_node, graph) \
-                   if x in segments]
-        if not options:  # Reached a dead end
-            break
-        chosen_path = random.choice(options)
-        segments.remove(chosen_path)  # Never revisit this edge
+        # Fleury's algorith tells us to preferentially select non-bridges
+        non_bridges = [x for x in gr.find_possible_paths(current_node, graph) \
+                   if x in segments and not gr.is_bridge(x, graph, segments)]
+        bridges = [x for x in gr.find_possible_paths(current_node, graph) \
+                   if x in segments and gr.is_bridge(x, graph, segments)]
+        if non_bridges:
+            chosen_path = random.choice(non_bridges)
+        elif bridges:
+            chosen_path = random.choice(bridges)
+        else:
+            break  # Reached a dead-end
         next_node = chosen_path.strip(current_node)  # Get the other end
+        segments.remove(chosen_path)  # Never revisit this edge
         route.append('{}{}'.format(current_node, next_node))
         current_node = next_node
 

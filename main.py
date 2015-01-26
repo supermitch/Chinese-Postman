@@ -106,7 +106,7 @@ def main():
         ('ED', 2),
         ('DA', 3),
     ]
-    from graphs import (north, golf)
+    from data import north, golf
     graph = north.graph
 
     if not eularian.is_eularian(graph):
