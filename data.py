@@ -1,5 +1,5 @@
 # North of Chancellor Blvd. graph
-graph = [
+north = [
     ('AB', 10),
     ('BC', 1),
     ('BD', 10),
@@ -21,4 +21,25 @@ graph = [
     ('NP', 2),
     ('PQ', 1),
 ]
+
+# North of University Blvd. to Chancellor Blvd.
+golf = [
+    ('AB', 4),
+    ('BC', 3),
+    ('BG', 1),
+    ('CD', 1),
+    ('CE', 6),
+    ('CF', 2),
+    ('EF', 7),
+    ('FG', 2),
+    ('FI', 2),
+    ('GH', 9),
+    ('GI', 2),
+    ('IJ', 8),
+    ('JK', 1),
+    ('JN', 6),
+    ('KL', 2),
+    ('KM', 7),
+]
+
 

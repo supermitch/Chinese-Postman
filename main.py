@@ -106,17 +106,22 @@ def main():
         ('ED', 2),
         ('DA', 3),
     ]
-    from data import north, golf
-    graph = north.graph
+    from data import golf, north
+    graph = golf
+    graph = north
 
     if not eularian.is_eularian(graph):
+        print('Converting to Eularian path...')
         graph = make_eularian(graph)
+        print('\t... done')
 
+    print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start='A')
+    print('\t... done')
     if not route:
-        print('{} attempts: No solution found'.format(attempts))
+        print('\n{} attempts: No solution found'.format(attempts))
     else:
-        print('{} attempts: Solution: {}'.format(attempts, route))
+        print('\n{} attempts: Solution: {}'.format(attempts, route))
 
 if __name__ == '__main__':
     main()
