@@ -58,37 +58,30 @@ def is_bridge(edge, graph, segments=None):
     Given a graph and (optional) unvisited segments.
 
     """
-    print(edge, graph, segments)
     start = random.choice(edge)
 
     stack = []
     visited = []
     while True:
-        stack.append(start)
+        if start not in stack:
+            stack.append(start)
         visited.append(start)
         edge_options = [x for x in find_possible_paths(start, graph) if x in segments]
-        adjacent_nodes = sorted([end_node(start, edge) for edge in options])
+        adjacent_nodes = sorted([end_node(start, edge) for edge in edge_options])
         node_options = [x for x in adjacent_nodes if x not in visited]
         if node_options:
-            print(next_nodes)
-            start = next_nodes[0]  # Alphabetical, for now
+            start = node_options[0]  # Alphabetical, for now
         else:
             try:
-                start = stack.pop()
+                stack.pop()
+                start = stack[-1]
             except IndexError:
                 break
-    # TODO: This is wrong...
-    if len(visited) == len(gr.all_nodes(graph)):
+    remaining_graph = [edge for edge in graph if edge[0] in segments]
+    if len(visited) == len(all_nodes(remaining_graph)):
         return False
     else:
         return True
-
-    # choose one node on the edge
-    # from that node, explore every connected edge, minus
-    # removed segments
-    # if we visit every edge node in the graph, we
-    # are not a bridge
-    return False
 
 def main():
     """ Run a test on a known Eularian graph. """
