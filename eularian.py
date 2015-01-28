@@ -11,7 +11,7 @@ import random
 import graph as gr
 import my_math
 
-def random_walk_graph(graph, start=None, circuit=False):
+def fleury_walk(graph, start=None, circuit=False):
     """
     Return an attempt at walking the edges of a graph.
 
@@ -22,29 +22,28 @@ def random_walk_graph(graph, start=None, circuit=False):
     If circuit is True, route must start & end at the same node.
 
     """
-    segments = gr.all_edges(graph)
-    if start:
-        current_node = start
-    else:  # Choose a node at random
-        current_node = random.choice(tuple(gr.all_nodes(graph)))
+    unvisited = gr.all_edges(graph)
+
+    # Begin at a random node unless start is specified
+    node = start if start else random.choice(tuple(gr.all_nodes(graph)))
 
     route = []
-    while segments:
+    while unvisited:
         # Fleury's algorith tells us to preferentially select non-bridges
-        non_bridges = [x for x in gr.find_possible_paths(current_node, graph) \
-                   if x in segments and not gr.is_bridge(x, graph, segments)]
-        bridges = [x for x in gr.find_possible_paths(current_node, graph) \
-                   if x in segments and gr.is_bridge(x, graph, segments)]
+        options = [x for x in gr.find_possible_paths(node, graph) \
+                   if x in unvisited]
+        bridges = [x for x in options if gr.is_bridge(x, graph, unvisited)]
+        non_bridges = [x for x in options if x not in bridges]
         if non_bridges:
             chosen_path = random.choice(non_bridges)
         elif bridges:
             chosen_path = random.choice(bridges)
         else:
-            break  # Reached a dead-end
-        next_node = gr.end_node(current_node, chosen_path)  # The other end
-        segments.remove(chosen_path)  # Never revisit this edge
-        route.append('{}{}'.format(current_node, next_node))
-        current_node = next_node
+            break  # Reached a dead-end, no path options
+        next_node = gr.end_node(node, chosen_path)  # The other end
+        unvisited.remove(chosen_path)  # Never revisit this edge
+        route.append('{}{}'.format(node, next_node))
+        node = next_node
 
     return route
 
@@ -57,20 +56,12 @@ def eularian_path(graph, start=None, circuit=False):
     If `start` is set, force start at that Node.
 
     """
-    # TODO: How do we know we checked all possible solutions?
     for i in range(1, 1001):
-        route = random_walk_graph(graph, start, circuit)
+        route = fleury_walk(graph, start, circuit)
         if len(route) == len(graph):  # We visited every edge
             return route, i
-    return [], i
+    return [], i  # Never found a solution
 
-def is_eularian(graph):
-    """ Return True if a graph has zero odd nodes. """
-    return not gr.find_odd_nodes(graph)
-
-def is_semi_eularian(graph):
-    """ Return True if graph has exactly two odd nodes. """
-    return len(gr.find_odd_nodes(graph)) == 2
 
 def main():
     """ Run a test on a known Eularian graph. """
@@ -81,7 +72,7 @@ def main():
         ('BC', 3),
         ('CD', 5),
     ]
-    if is_semi_eularian(graph):
+    if gr.is_semi_eularian(graph):
         print('Graph: {}'.format(graph))
         print('Graph is semi-Eularian')
         route, attempts = eularian_path(graph, start='A')

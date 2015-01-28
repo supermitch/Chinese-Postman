@@ -5,8 +5,6 @@ A graph data structure is a list of (edge, cost) tuples, where edge is a
 start-end string of nodes, e.g. ('AB', 5).
 
 """
-import random
-
 import my_math
 
 def find_total_cost(graph):
@@ -51,22 +49,33 @@ def edge_cost(edge, graph):
             return cost
     return None
 
+def is_eularian(graph):
+    """ Return True if a graph is Eularian (has zero odd nodes) """
+    return not find_odd_nodes(graph)
+
+def is_semi_eularian(graph):
+    """ Return True if a graph is Semi-Eularian (has exactly 2 odd nodes) """
+    return len(find_odd_nodes(graph)) == 2
+
 def is_bridge(edge, graph, segments=None):
     """
     Return True if an edge is a bridge.
 
-    Given a graph and (optional) unvisited segments.
+    Given a graph and (optional) unvisited segments, utilize depth-first
+    search to visit all connected edges. If DFS reaches all unvisited
+    segments, then the edge must not be a bridge.
 
     """
-    start = random.choice(edge)
+    start = edge[1]  # Could start at either end
 
     stack = []
-    visited = []
+    visited = set()
     while True:
         if start not in stack:
             stack.append(start)
-        visited.append(start)
-        edge_options = [x for x in find_possible_paths(start, graph) if x in segments]
+        visited.add(start)
+        edge_options = [x for x in find_possible_paths(start, graph) \
+                        if x in segments]
         adjacent_nodes = sorted([end_node(start, edge) for edge in edge_options])
         node_options = [x for x in adjacent_nodes if x not in visited]
         if node_options:
@@ -74,14 +83,17 @@ def is_bridge(edge, graph, segments=None):
         else:
             try:
                 stack.pop()
-                start = stack[-1]
-            except IndexError:
+                start = stack[-1]  # Go back to the last node
+            except IndexError:  # We are back to the beginning
                 break
+    # Find all the edges that are in our graph (even if disconnected)
     remaining_graph = [edge for edge in graph if edge[0] in segments]
+
+    # If we visited all the edges during our DFS, we must not be disconnected
     if len(visited) == len(all_nodes(remaining_graph)):
         return False
     else:
-        return True
+        return True  # The edge is a bridge
 
 def main():
     """ Run a test on a known Eularian graph. """

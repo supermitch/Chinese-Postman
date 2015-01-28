@@ -121,7 +121,7 @@ def main():
     graph = golf
     graph = north
 
-    if not eularian.is_eularian(graph):
+    if not gr.is_eularian(graph):
         print('Converting to Eularian path...')
         graph = make_eularian(graph)
         print('\t... done')
