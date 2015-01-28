@@ -1,3 +1,10 @@
+"""
+Solve the Chinese-Postman problem.
+
+For a given graph, determine the minimum amount of backtracking
+required to complete an Eularian circuit.
+
+"""
 import copy
 import itertools
 import random
