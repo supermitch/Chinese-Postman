@@ -31,10 +31,11 @@ def build_path_sets(graph):
             print('Index: ', index)
             pairs.append(combos[index])
             print('Pairs:', pairs)
-            start, end = pairs[-1]  # e.g. 'A', 'B'
+            #start, end = pairs[-1]  # e.g. 'A', 'B'
+            previous_nodes = my_iter.flatten_tuples(pairs)
             for i, combo in enumerate(combos[index + 1:], start=index + 1):
                 print(i, combo)
-                if start not in combo and end not in combo:
+                if all(x not in combo for x in previous_nodes):
                     print('valid')
                     index = i
                     print(index)
@@ -151,7 +152,7 @@ def main():
     #]
     from data import golf, north
     graph = golf
-    #graph = north
+    graph = north
 
     if not eularian.is_eularian(graph):
         print('Converting to Eularian path...')
