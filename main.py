@@ -15,24 +15,43 @@ def build_path_sets(graph):
     odd_nodes = gr.find_odd_nodes(graph)
     print('finding combos')
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
-    no_of_sets = len(odd_nodes) / 2
+    no_of_pairs = len(odd_nodes) / 2
 
     print('combos: {}'.format(combos))
     print('len combos: {}'.format(len(combos)))
-    print('no of sets: {}'.format(no_of_sets))
+    print('no of sets: {}'.format(no_of_pairs))
     # Every pair in a set of paths must have unique nodes
     print('finding path sets')
-    i = 0
-    import sys
-    sys.exit()
-    for path_set in itertools.combinations(combos, no_of_sets):
-        i += 1
-        print('{}: {}'.format(i, path_set))
+    set_no = 0
+    sets = []
+    while set_no < len(combos) / no_of_pairs:
+        index = set_no
+        pairs = []
+        while True:
+            print('Index: ', index)
+            pairs.append(combos[index])
+            print('Pairs:', pairs)
+            start, end = pairs[-1]  # e.g. 'A', 'B'
+            for i, combo in enumerate(combos[index + 1:], start=index + 1):
+                print(i, combo)
+                if start not in combo and end not in combo:
+                    print('valid')
+                    index = i
+                    print(index)
+                    break
+            if len(pairs) == no_of_pairs:
+                break
+        sets.append(pairs)
+        set_no += 1
+        print(sets)
 
-    path_sets = [path_set for path_set in \
-                 itertools.combinations(combos, no_of_sets) \
-                 if my_iter.all_unique(my_iter.flatten_tuples(path_set))]
-    return path_sets
+    return sets
+
+    # Takes millions of years:
+    #path_sets = [path_set for path_set in \
+    #             itertools.combinations(combos, no_of_sets) \
+    #             if my_iter.all_unique(my_iter.flatten_tuples(path_set))]
+    #return path_sets
 
 def find_set_cost(path_set, graph):
     """ Find the cost and route for each path in a set of path options. """
@@ -122,17 +141,17 @@ def main():
         ('EG', 3),
         ('GH', 1),
     ]
-    graph = [
-        ('AB', 4),
-        ('BC', 3),
-        ('CD', 2),
-        ('BD', 3),
-        ('ED', 2),
-        ('DA', 3),
-    ]
+    #graph = [
+    #    ('AB', 4),
+    #    ('BC', 3),
+    #    ('CD', 2),
+    #    ('BD', 3),
+    #    ('ED', 2),
+    #    ('DA', 3),
+    #]
     from data import golf, north
     graph = golf
-    graph = north
+    #graph = north
 
     if not eularian.is_eularian(graph):
         print('Converting to Eularian path...')
