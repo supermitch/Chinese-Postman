@@ -124,9 +124,9 @@ def main():
         ('DA', 3),
     ]
 
-    from data import golf, north
-    graph = golf
-    graph = north
+    import data.data
+    graph = data.data.golf
+    #graph = data.data.north
 
     if not gr.is_eularian(graph):
         print('Converting to Eularian path...')
