@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Solve the Chinese-Postman problem.
 
@@ -50,7 +51,7 @@ def main():
     ]
 
     graph = data.data.golf
-    #graph = data.data.north
+    graph = data.data.north
 
     if not gr.is_eularian(graph):
         print('Converting to Eularian path...')
