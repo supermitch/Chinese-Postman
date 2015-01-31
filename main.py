@@ -6,9 +6,18 @@ For a given graph, determine the minimum amount of backtracking
 required to complete an Eularian circuit.
 
 """
+import argparse
+
 import data.data
 import eularian
 import graph as gr
+
+def setup_args():
+    """ Setup argparse to take graph name argument. """
+    parser = argparse.ArgumentParser(description='Find an Eularian Cicruit.')
+    parser.add_argument('graph', nargs='?', help='Name of graph to load')
+    args = parser.parse_args()
+    return args.graph
 
 def main():
     graph = [  # Eularian
@@ -28,20 +37,6 @@ def main():
         ('DE', 9),
     ]
     graph = [
-        ('AB', 8),
-        ('AE', 4),
-        ('AH', 3),
-        ('BC', 9),
-        ('BG', 6),
-        ('CD', 5),
-        ('CF', 3),
-        ('DE', 5),
-        ('DF', 1),
-        ('EF', 2),
-        ('EG', 3),
-        ('GH', 1),
-    ]
-    graph = [
         ('AB', 4),
         ('BC', 3),
         ('CD', 2),
@@ -49,14 +44,19 @@ def main():
         ('ED', 2),
         ('DA', 3),
     ]
-
-    graph = data.data.golf
-    #graph = data.data.north
+    graph_name = setup_args()
+    try:
+        graph = getattr(data.data, graph_name)
+    except AttributeError:
+        print('\tInvalid graph name, using default.')
+    except TypeError:
+        pass  # None is ok, use default
 
     if not gr.is_eularian(graph):
         print('Converting to Eularian path...')
         graph, min_cost = eularian.make_eularian(graph)
-        print('\tMinimum cost is {}'.format(min_cost))
+        print('\tAdded cost is {}'.format(min_cost))
+        print('\tTotal cost is {}'.format(gr.total_cost(graph)))
 
     print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start='A')
