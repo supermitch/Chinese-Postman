@@ -42,6 +42,14 @@ Circuit can be found.
 
     python main.py
 
+If you want to specify which graph to load, simply add the graph name:
+
+    python main.py north
+
+You can find all the graph names in the `data` folder.
+
+This program will run in both Python 2.7 and Python 3.4, at least.
+
 ## Inspiration
 
 I was inspired to learn about and solve this problem when I thought it would
