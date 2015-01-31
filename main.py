@@ -51,20 +51,19 @@ def main():
     ]
 
     graph = data.data.golf
-    graph = data.data.north
+    #graph = data.data.north
 
     if not gr.is_eularian(graph):
         print('Converting to Eularian path...')
-        graph = eularian.make_eularian(graph)
-        print('\t... done')
+        graph, min_cost = eularian.make_eularian(graph)
+        print('\tMinimum cost is {}'.format(min_cost))
 
     print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start='A')
-    print('\t... done')
     if not route:
-        print('\nGave up after {} attempts.'.format(attempts))
+        print('\tGave up after {} attempts.'.format(attempts))
     else:
-        print('\nSolved in {} attempts:\n{}'.format(attempts, route))
+        print('\tSolved in {} attempts:\n{}'.format(attempts, route))
 
 if __name__ == '__main__':
     main()

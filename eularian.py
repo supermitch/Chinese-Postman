@@ -110,7 +110,7 @@ def find_minimum_path_set(path_sets, set_routes, set_costs):
     min_cost = min(set_costs)
     min_set = path_sets[set_costs.index(min_cost)]
     min_route = set_routes[set_costs.index(min_cost)]
-    return min_route
+    return min_route, min_cost
 
 def add_new_edges(graph, min_route):
     """ Return new graph w/ new edges extracted from minimum route. """
@@ -126,9 +126,9 @@ def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
     path_sets = build_path_sets(graph)  # Get all possible added path sets
     set_routes, set_costs = find_set_solutions(path_sets, graph)
-    min_route = find_minimum_path_set(path_sets, set_routes, set_costs)
+    min_route, min_cost = find_minimum_path_set(path_sets, set_routes, set_costs)
     new_graph = add_new_edges(graph, min_route)  # Add our new edges
-    return new_graph
+    return new_graph, min_cost
 
 
 def main():
