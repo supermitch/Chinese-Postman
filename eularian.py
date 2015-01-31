@@ -33,7 +33,7 @@ def fleury_walk(graph, start=None, circuit=False):
     route = []
     while unvisited:
         # Fleury's algorith tells us to preferentially select non-bridges
-        options = [x for x in gr.find_possible_paths(node, graph) \
+        options = [x for x in gr.possible_paths(node, graph) \
                    if x in unvisited]
         bridges = [x for x in options if gr.is_bridge(x, graph, unvisited)]
         non_bridges = [x for x in options if x not in bridges]
@@ -68,7 +68,7 @@ def eularian_path(graph, start=None, circuit=False):
 
 def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
-    odd_nodes = gr.find_odd_nodes(graph)
+    odd_nodes = gr.odd_nodes(graph)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     no_of_pairs = len(odd_nodes) / 2
 
