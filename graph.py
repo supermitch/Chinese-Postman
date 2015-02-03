@@ -25,8 +25,8 @@ def all_nodes(graph):
 
 def odd_nodes(graph):
     """ Return a list of nodes of odd order. """
-    return [node for node, order in orders(graph).items() if \
-            not my_math.is_even(order)]
+    return sorted([node for node, order in orders(graph).items() if \
+                  not my_math.is_even(order)])
 
 def end_node(node, edge):
     """ Returns the other end of an edge. """
@@ -66,6 +66,9 @@ def is_bridge(edge, graph, segments=None):
     segments, then the edge must not be a bridge.
 
     """
+    if segments is None:  # Segments is "unvisited segments"
+        segments = all_edges(graph)
+
     start = edge[1]  # Could start at either end
 
     stack = []
