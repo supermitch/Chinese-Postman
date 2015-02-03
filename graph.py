@@ -92,7 +92,7 @@ def is_bridge(edge, graph, segments=None):
     # Find all the edges that are in our graph (even if disconnected)
     remaining_graph = [edge for edge in graph if edge[0] in segments]
 
-    # If we visited all the edges during our DFS, we must not be disconnected
+    # If we visited all the nodes during our DFS, we must not be disconnected
     if len(visited) == len(all_nodes(remaining_graph)):
         return False
     else:
