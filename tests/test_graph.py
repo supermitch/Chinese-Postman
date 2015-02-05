@@ -32,6 +32,24 @@ class TestEularian(unittest.TestCase):
         expected = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
         self.assertEqual(expected, result)
 
+    def test_remove_edges_duplicates_true(self):
+        graph = [('AB', 2), ('BC', 3), ('BC', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['BC'])
+        expected = [('AB', 2), ('BC', 4), ('AE', 5)]
+        self.assertEqual(expected, result)
+
+    def test_remove_edges_duplicates_false(self):
+        graph = [('AB', 2), ('BC', 3), ('BC', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['BC'])
+        expected = [('AB', 2), ('BC', 3), ('AE', 5)]
+        self.assertNotEqual(expected, result)
+
+    def test_remove_edges_duplicates_false_all(self):
+        graph = [('AB', 2), ('BC', 3), ('BC', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['BC'])
+        expected = [('AB', 2), ('AE', 5)]
+        self.assertNotEqual(expected, result)
+
     def test_edge_options(self):
         graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
         result = gr.edge_options('C', graph)

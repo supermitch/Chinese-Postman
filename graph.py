@@ -32,10 +32,16 @@ def remove_edges(graph, edges):
     Remove a list of edges from a graph.
 
     Works even for reversed edge names, e.g. 'BA' will still match 'AB'.
+    Will not remove all edges, if parallel edges exist, unless they are
+    listed twice.
 
     """
-    removed  = [e for edge in edges for e in [edge, edge[::-1]]]
-    return [(edge, cost) for edge, cost in graph if edge not in removed]
+    for bad_edge in edges:
+        for edge in graph[:]:  # Iterate over a copy
+            if edge[0] in (bad_edge, bad_edge[::-1]):
+                graph.remove(edge)
+                break  # Do not remove same edge twice!
+    return graph
 
 def edge_options(node, graph):
     """ Return a list of valid next moves if we are at a given node. """
