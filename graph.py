@@ -11,9 +11,31 @@ def total_cost(graph):
     """ Returns the sum of all edge costs. """
     return sum(cost for _, cost in graph)
 
+def edge_cost(edge, graph):
+    """
+    Find the edge cost in the graph, or return None if edge not found.
+
+    Checks both 'AB' and 'BA' (undirected) edge names.
+
+    """
+    for e, cost in graph:
+        if e in (edge, edge[::-1]):
+            return cost
+    return None
+
 def all_edges(graph):
     """ Return a list of all edges in the graph. """
     return [edge for edge, _ in graph]
+
+def remove_edges(graph, edges):
+    """
+    Remove a list of edges from a graph.
+
+    Works even for reversed edge names, e.g. 'BA' will still match 'AB'.
+
+    """
+    removed  = [e for edge in edges for e in [edge, edge[::-1]]]
+    return [(edge, cost) for edge, cost in graph if edge not in removed]
 
 def possible_paths(node, graph):
     """ Return a list of valid next moves if we are at a given node. """
@@ -37,18 +59,6 @@ def orders(graph):
     nodes = all_nodes(graph)
     return {node: len(possible_paths(node, graph)) for node in nodes}
 
-def edge_cost(edge, graph):
-    """
-    Find the edge cost in the graph, or return None if edge not found.
-
-    Checks both 'AB' and 'BA' (undirected) edge names.
-
-    """
-    for e, cost in graph:
-        if e in (edge, edge[::-1]):
-            return cost
-    return None
-
 def is_eularian(graph):
     """ Return True if a graph is Eularian (has zero odd nodes) """
     return not odd_nodes(graph)
@@ -57,28 +67,26 @@ def is_semi_eularian(graph):
     """ Return True if a graph is Semi-Eularian (has exactly 2 odd nodes) """
     return len(odd_nodes(graph)) == 2
 
-def is_bridge(edge, graph, segments=None):
+def is_bridge(edge, graph):
     """
     Return True if an edge is a bridge.
 
-    Given a graph and (optional) unvisited segments, utilize depth-first
-    search to visit all connected edges. If DFS reaches all unvisited
-    segments, then the edge must not be a bridge.
+    Given a graph and edge, utilize depth-first search to visit all connected
+    edges (minus the given edge). If DFS reaches all unvisited edges, then
+    the given edge must not be a bridge.
 
     """
-    if segments is None:  # Segments is "unvisited segments"
-        segments = all_edges(graph)
+    test_graph = remove_edges(graph, [edge])  # Don't include the given edge
 
-    start = edge[1]  # Could start at either end
+    start = edge[1]  # Start node. Could start at either end.
 
     stack = []
-    visited = set()
+    visited = set()  # Visited nodes
     while True:
         if start not in stack:
             stack.append(start)
         visited.add(start)
-        edge_options = [x for x in possible_paths(start, graph) \
-                        if x in segments]
+        edge_options = [x for x in possible_paths(start, test_graph)]
         adjacent_nodes = sorted([end_node(start, edge) for edge in edge_options])
         node_options = [x for x in adjacent_nodes if x not in visited]
         if node_options:
@@ -89,11 +97,9 @@ def is_bridge(edge, graph, segments=None):
                 start = stack[-1]  # Go back to the last node
             except IndexError:  # We are back to the beginning
                 break
-    # Find all the edges that are in our graph (even if disconnected)
-    remaining_graph = [edge for edge in graph if edge[0] in segments]
 
     # If we visited all the nodes during our DFS, we must not be disconnected
-    if len(visited) == len(all_nodes(remaining_graph)):
+    if len(visited) == len(all_nodes(graph)):
         return False
     else:
         return True  # The edge is a bridge

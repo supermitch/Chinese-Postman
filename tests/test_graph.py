@@ -14,6 +14,24 @@ class TestEularian(unittest.TestCase):
         expected = ['AB', 'AC', 'AD', 'AE']
         self.assertEqual(expected, result)
 
+    def test_remove_edges_easy(self):
+        graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['AB', 'AC'])
+        expected = [('AD', 4), ('AE', 5)]
+        self.assertEqual(expected, result)
+
+    def test_remove_edges_reversed(self):
+        graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['AB', 'CA'])
+        expected = [('AD', 4), ('AE', 5)]
+        self.assertEqual(expected, result)
+
+    def test_remove_edges_none(self):
+        graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
+        result = gr.remove_edges(graph, ['XY'])
+        expected = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
+        self.assertEqual(expected, result)
+
     def test_possible_paths(self):
         graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
         result = gr.possible_paths('C', graph)
@@ -92,11 +110,11 @@ class TestEularian(unittest.TestCase):
         #  Two triangles joined by 'CD'
         graph = [('AB', 1), ('AC', 1), ('BC', 1), ('CD', 1), ('DE', 1),
                  ('DF', 1), ('EF', 1)]
-        self.assertTrue(gr.is_bridge('CD', graph, segments=None))
+        self.assertTrue(gr.is_bridge('CD', graph))
 
     def test_is_bridge_false(self):
         #  Two triangles joined by 'CD'
         graph = [('AB', 1), ('AC', 1), ('BC', 1), ('CD', 1), ('DE', 1),
                  ('DF', 1), ('EF', 1)]
-        self.assertFalse(gr.is_bridge('BC', graph, segments=None))
+        self.assertFalse(gr.is_bridge('BC', graph))
 
