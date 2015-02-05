@@ -8,6 +8,18 @@ class TestEularian(unittest.TestCase):
         graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
         self.assertEqual(14, gr.total_cost(graph))
 
+    def test_edge_cost_correct(self):
+        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
+        self.assertEqual(3, gr.edge_cost('AC', graph))
+
+    def test_edge_cost_reversed(self):
+        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
+        self.assertEqual(3, gr.edge_cost('CA', graph))
+
+    def test_edge_cost_not_found(self):
+        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
+        self.assertIsNone(gr.edge_cost('AD', graph))
+
     def test_all_edges(self):
         graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
         result = gr.all_edges(graph)
@@ -68,34 +80,22 @@ class TestEularian(unittest.TestCase):
         expected = ['A', 'E']
         self.assertEqual(expected, result)
 
+    def test_node_options_correct(self):
+        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
+        result = gr.node_options('C', graph)
+        self.assertEqual(['A', 'B'], result)
+
     def test_end_node_correct(self):
         self.assertEqual('E', gr.end_node('A', 'AE'))
 
     def test_end_node_incorrect(self):
         self.assertNotEqual('A', gr.end_node('A', 'AE'))
 
-    def test_node_options_correct(self):
-        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
-        result = gr.node_options('C', graph)
-        self.assertEqual(['A', 'B'], result)
-
     def test_orders(self):
         graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
         result = gr.orders(graph)
         expected = {'A': 3, 'B': 2, 'C': 2, 'E': 1}
         self.assertEqual(expected, result)
-
-    def test_edge_cost_correct(self):
-        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
-        self.assertEqual(3, gr.edge_cost('AC', graph))
-
-    def test_edge_cost_reversed(self):
-        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
-        self.assertEqual(3, gr.edge_cost('CA', graph))
-
-    def test_edge_cost_not_found(self):
-        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
-        self.assertIsNone(gr.edge_cost('AD', graph))
 
     def test_is_eularian_true(self):
         # A simple Eularian diamond
