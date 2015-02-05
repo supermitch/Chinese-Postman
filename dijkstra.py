@@ -5,7 +5,7 @@ Minimum Cost Path solver using Dijkstra's Algorithm.
 
 import graph as gr
 
-def find_shortest_path(end, previous_nodes):
+def summarize_path(end, previous_nodes):
     """ Summarize a chain of previous nodes and return path. """
     route = []
     prev = end
@@ -33,7 +33,7 @@ def find_cost(path, graph):
 
     node = start
     while unvisited:  # While we still have unvisited nodes
-        for option in gr.possible_paths(node, graph):
+        for option in gr.edge_options(node, graph):
             next_node = option.strip(node)
             if next_node not in unvisited:
                 continue  # Don't go backwards
@@ -54,7 +54,7 @@ def find_cost(path, graph):
             break
 
     cost = node_costs[end]
-    shortest_path = find_shortest_path(end, previous_nodes)
+    shortest_path = summarize_path(end, previous_nodes)
 
     return cost, shortest_path
 

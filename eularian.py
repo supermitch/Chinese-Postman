@@ -26,6 +26,7 @@ def fleury_walk(graph, start=None, circuit=False):
 
     """
     unvisited = gr.all_edges(graph)
+    visited = []
 
     # Begin at a random node unless start is specified
     node = start if start else random.choice(tuple(gr.all_nodes(graph)))
@@ -33,9 +34,10 @@ def fleury_walk(graph, start=None, circuit=False):
     route = []
     while unvisited:
         # Fleury's algorith tells us to preferentially select non-bridges
-        options = [x for x in gr.possible_paths(node, graph) \
+        reduced_graph = gr.remove_edges(graph, visited)
+        options = [x for x in gr.edge_options(node, graph) \
                    if x in unvisited]
-        bridges = [x for x in options if gr.is_bridge(x, graph, unvisited)]
+        bridges = [x for x in options if gr.is_bridge(x, reduced_graph)]
         non_bridges = [x for x in options if x not in bridges]
         if non_bridges:
             chosen_path = random.choice(non_bridges)
@@ -44,7 +46,10 @@ def fleury_walk(graph, start=None, circuit=False):
         else:
             break  # Reached a dead-end, no path options
         next_node = gr.end_node(node, chosen_path)  # The other end
+
         unvisited.remove(chosen_path)  # Never revisit this edge
+        visited.append(chosen_path)  # Never revisit this edge
+
         route.append('{}{}'.format(node, next_node))
         node = next_node
 
