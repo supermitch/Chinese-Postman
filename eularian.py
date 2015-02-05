@@ -25,18 +25,16 @@ def fleury_walk(graph, start=None, circuit=False):
     If circuit is True, route must start & end at the same node.
 
     """
-    unvisited = gr.all_edges(graph)
-    visited = []
+    visited = []  # Edges
 
     # Begin at a random node unless start is specified
     node = start if start else random.choice(tuple(gr.all_nodes(graph)))
 
     route = []
-    while unvisited:
+    while len(visited) < len(graph):
         # Fleury's algorith tells us to preferentially select non-bridges
         reduced_graph = gr.remove_edges(graph, visited)
-        options = [x for x in gr.edge_options(node, graph) \
-                   if x in unvisited]
+        options = [x for x in gr.edge_options(node, reduced_graph)]
         bridges = [x for x in options if gr.is_bridge(x, reduced_graph)]
         non_bridges = [x for x in options if x not in bridges]
         if non_bridges:
@@ -47,7 +45,6 @@ def fleury_walk(graph, start=None, circuit=False):
             break  # Reached a dead-end, no path options
         next_node = gr.end_node(node, chosen_path)  # The other end
 
-        unvisited.remove(chosen_path)  # Never revisit this edge
         visited.append(chosen_path)  # Never revisit this edge
 
         route.append('{}{}'.format(node, next_node))
@@ -102,12 +99,9 @@ def find_set_cost(path_set, graph):
 def find_set_solutions(path_sets, graph):
     """ Return path and cost for all paths in the path sets. """
     set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
-
     set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
-
     set_routes = [list(v[1] for v in paths.values()) \
                   for paths in set_solutions]
-
     return set_routes, set_costs
 
 def find_minimum_path_set(path_sets, set_routes, set_costs):
