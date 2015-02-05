@@ -2,7 +2,7 @@ import unittest
 
 import graph as gr
 
-class TestEularian(unittest.TestCase):
+class TestGraph(unittest.TestCase):
 
     def test_total_cost(self):
         graph = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
