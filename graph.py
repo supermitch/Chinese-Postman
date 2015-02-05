@@ -37,7 +37,7 @@ def remove_edges(graph, edges):
     removed  = [e for edge in edges for e in [edge, edge[::-1]]]
     return [(edge, cost) for edge, cost in graph if edge not in removed]
 
-def possible_paths(node, graph):
+def edge_options(node, graph):
     """ Return a list of valid next moves if we are at a given node. """
     return [edge for edge, _ in graph if node in edge]
 
@@ -50,6 +50,11 @@ def odd_nodes(graph):
     return sorted([node for node, order in orders(graph).items() if \
                   not my_math.is_even(order)])
 
+def node_options(node, graph):
+    """ Return options for nodes from a given node. """
+    return sorted([end_node(node, edge) \
+                  for edge in edge_options(node, graph)])
+
 def end_node(node, edge):
     """ Returns the other end of an edge. """
     return edge.strip(node)
@@ -57,7 +62,7 @@ def end_node(node, edge):
 def orders(graph):
     """ Return a dictionary of node orders. """
     nodes = all_nodes(graph)
-    return {node: len(possible_paths(node, graph)) for node in nodes}
+    return {node: len(edge_options(node, graph)) for node in nodes}
 
 def is_eularian(graph):
     """ Return True if a graph is Eularian (has zero odd nodes) """
@@ -67,7 +72,7 @@ def is_semi_eularian(graph):
     """ Return True if a graph is Semi-Eularian (has exactly 2 odd nodes) """
     return len(odd_nodes(graph)) == 2
 
-def is_bridge(edge, graph):
+def is_bridge(edge, original_graph):
     """
     Return True if an edge is a bridge.
 
@@ -76,7 +81,7 @@ def is_bridge(edge, graph):
     the given edge must not be a bridge.
 
     """
-    test_graph = remove_edges(graph, [edge])  # Don't include the given edge
+    graph = remove_edges(original_graph, [edge])  # Don't include given edge
 
     start = edge[1]  # Start node. Could start at either end.
 
@@ -86,11 +91,9 @@ def is_bridge(edge, graph):
         if start not in stack:
             stack.append(start)
         visited.add(start)
-        edge_options = [x for x in possible_paths(start, test_graph)]
-        adjacent_nodes = sorted([end_node(start, edge) for edge in edge_options])
-        node_options = [x for x in adjacent_nodes if x not in visited]
-        if node_options:
-            start = node_options[0]  # Alphabetical, for now
+        nodes = [x for x in node_options(start, graph) if x not in visited]
+        if nodes:
+            start = nodes[0]  # Alphabetical, for now
         else:
             try:
                 stack.pop()
@@ -99,7 +102,7 @@ def is_bridge(edge, graph):
                 break
 
     # If we visited all the nodes during our DFS, we must not be disconnected
-    if len(visited) == len(all_nodes(graph)):
+    if len(visited) == len(all_nodes(original_graph)):
         return False
     else:
         return True  # The edge is a bridge
@@ -118,7 +121,7 @@ def main():
     print('All nodes: {}'.format(all_nodes(graph)))
     print('Odd nodes: {}'.format(find_odd_nodes(graph)))
     print('All orders: {}'.format(find_orders(graph)))
-    print('Possible paths for C: {}'.format(find_possible_paths('C', graph)))
+    print('Possible paths for C: {}'.format(find_edge_options('C', graph)))
     print('Cost for AB: {}'.format(edge_cost('AB', graph)))
 
 if __name__ == '__main__':

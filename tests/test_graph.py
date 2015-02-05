@@ -32,9 +32,9 @@ class TestEularian(unittest.TestCase):
         expected = [('AB', 2), ('AC', 3), ('AD', 4), ('AE', 5)]
         self.assertEqual(expected, result)
 
-    def test_possible_paths(self):
+    def test_edge_options(self):
         graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
-        result = gr.possible_paths('C', graph)
+        result = gr.edge_options('C', graph)
         expected = ['AC', 'BC']
         self.assertEqual(expected, result)
 
@@ -55,6 +55,11 @@ class TestEularian(unittest.TestCase):
 
     def test_end_node_incorrect(self):
         self.assertNotEqual('A', gr.end_node('A', 'AE'))
+
+    def test_node_options_correct(self):
+        graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
+        result = gr.node_options('C', graph)
+        self.assertEqual(['A', 'B'], result)
 
     def test_orders(self):
         graph = [('AB', 2), ('AC', 3), ('BC', 4), ('AE', 5)]
