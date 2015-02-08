@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 if __name__ == '__main__' and __package__ is None:
     """ Add root path to sys.path for module discovery. """
     from os import sys, path
