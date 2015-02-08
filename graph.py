@@ -27,7 +27,7 @@ def all_edges(graph):
     """ Return a list of all edges in the graph. """
     return [edge for edge, _ in graph]
 
-def remove_edges(graph, edges):
+def remove_edges(original_graph, edges):
     """
     Remove a list of edges from a graph.
 
@@ -36,6 +36,7 @@ def remove_edges(graph, edges):
     listed twice.
 
     """
+    graph = original_graph[:]
     for bad_edge in edges:
         for edge in graph[:]:  # Iterate over a copy
             if edge[0] in (bad_edge, bad_edge[::-1]):
