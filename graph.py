@@ -113,23 +113,7 @@ def is_bridge(edge, original_graph):
     else:
         return True  # The edge is a bridge
 
-def main():
-    """ Run a test on a known Eularian graph. """
-    graph = [  # Eularian
-        ('AB', 4),
-        ('AC', 3),
-        ('AD', 5),
-        ('BC', 3),
-        ('CD', 5),
-    ]
-    print('Graph: {}'.format(graph))
-    print('Total cost: {}'.format(find_total_cost(graph)))
-    print('All nodes: {}'.format(all_nodes(graph)))
-    print('Odd nodes: {}'.format(find_odd_nodes(graph)))
-    print('All orders: {}'.format(find_orders(graph)))
-    print('Possible paths for C: {}'.format(find_edge_options('C', graph)))
-    print('Cost for AB: {}'.format(edge_cost('AB', graph)))
-
 if __name__ == '__main__':
-    main()
+    import tests.run_tests
+    tests.run_tests.run(['graph'])
 

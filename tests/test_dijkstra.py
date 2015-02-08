@@ -1,8 +1,8 @@
 import unittest
 
-import eularian
+import dijkstra
 
-class TestEularian(unittest.TestCase):
+class TestDijkstra(unittest.TestCase):
 
     def test_test(self):
         self.assertTrue(True)
