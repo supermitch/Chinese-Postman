@@ -32,7 +32,7 @@ def fleury_walk(graph, start=None, circuit=False):
 
     route = []
     while len(visited) < len(graph):
-        # Fleury's algorith tells us to preferentially select non-bridges
+        # Fleury's algorithm tells us to preferentially select non-bridges
         reduced_graph = gr.remove_edges(graph, visited)
         options = [x for x in gr.edge_options(node, reduced_graph)]
         bridges = [x for x in options if gr.is_bridge(x, reduced_graph)]
@@ -132,7 +132,7 @@ def make_eularian(graph):
 
 def main():
     """ Run a test on a known Eularian graph. """
-    graph = [  # Eularian
+    graph = [  # Semi-Eularian
         ('AB', 4),
         ('AC', 3),
         ('AD', 5),
