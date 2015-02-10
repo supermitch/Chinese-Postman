@@ -28,7 +28,7 @@ def fleury_walk(graph, start=None, circuit=False):
     visited = []  # Edges
 
     # Begin at a random node unless start is specified
-    node = start if start else random.choice(tuple(gr.all_nodes(graph)))
+    node = start if start else random.choice(graph.all_nodes)
 
     route = []
     while len(visited) < len(graph):

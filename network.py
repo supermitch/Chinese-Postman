@@ -29,7 +29,7 @@ class Graph(object):
 
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
-        return [x for x in sorted(self.nodes) if my_math.is_even(x.order)]
+        return [x for x in self.nodes.values() if my_math.is_even(x.order)]
 
     def node_options(self, node):
         return sorted(self.nodes[node].connections.keys())
@@ -37,22 +37,36 @@ class Graph(object):
     @property
     def is_eularian(self):
         """ Return True if all nodes are of even order. """
-        return len(self.odd_nodes) == 0
+        return len(self.odd_nodes()) == 0
 
     @property
     def is_semi_eularian(self):
         """ Return True if exactly 2 nodes are odd. """
         return len(self.odd_nodes) == 2
 
+    @property
+    def all_edges(self):
+        edges = []
+        for start in self.nodes.values():
+            for end, cost in start.connections:
+                if (start, end, cost) not in edges and \
+                    (end, start, cost) not in edges:
+                    edges.append((start, end, cost))
+        return edges
+
+    def __len__(self):
+        return len(self.nodes)
+
+
 class Node(object):
     """ A representation of a vertex in a graph. """
 
     def __init__(self, key):
         self.key = key
-        self.connections = {}
+        self.connections = []  # List of (node, cost) tuples
 
-    def add_connection(self, key, cost):
-        self.connections[key] = cost
+    def add_connection(self, node, cost):
+        self.connections.append((node, cost))
 
     @property
     def order(self):
