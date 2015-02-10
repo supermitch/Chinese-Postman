@@ -23,21 +23,22 @@ def find_cost(path, graph):
     """
     start, end = path
 
-    all_nodes = gr.all_nodes(graph)
+    all_nodes = graph.node_keys
     unvisited = set(all_nodes)
     # Initialize all nodes to total graph cost (at least)
-    node_costs = {node: gr.total_cost(graph) for node in all_nodes}
+    total_cost = graph.total_cost
+    node_costs = {node: total_cost for node in all_nodes}
     node_costs[start] = 0  # Start has zero cost
 
     previous_nodes = {node: None for node in all_nodes}
 
     node = start
     while unvisited:  # While we still have unvisited nodes
-        for option in gr.edge_options(node, graph):
-            next_node = option.strip(node)
+        for option in graph.edge_options(node):
+            next_node = option[1]
             if next_node not in unvisited:
                 continue  # Don't go backwards
-            cost = gr.edge_cost(option, graph)
+            cost = option[2]
             # If this path was cheaper than the prior cost, update it
             if node_costs[next_node] > node_costs[node] + cost:
                 node_costs[next_node] = node_costs[node] + cost
