@@ -18,3 +18,11 @@ class TestGraph(unittest.TestCase):
         graph = network.Graph(edges)
         self.assertEqual(edges, graph.all_edges)
 
+    def test_edge_cost_correct(self):
+        graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
+        self.assertEqual(4, graph.edge_cost(1, 4))
+
+    def test_edge_cost_correct(self):
+        graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
+        self.assertNotEqual(1, graph.edge_cost(1, 2))
+

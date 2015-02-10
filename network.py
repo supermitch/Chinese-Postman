@@ -20,6 +20,7 @@ class Graph(object):
             self.nodes[end].add_connection(start, cost)
 
     def add_node(self, key):
+        """ Add an unconnected node. """
         self.nodes[key] = Node(key)
 
     def all_nodes(self):
@@ -32,6 +33,7 @@ class Graph(object):
         return [x for x in self.nodes.values() if my_math.is_even(x.order)]
 
     def node_options(self, node):
+        """ Returns a list of (node, cost) tuples connected. """
         return sorted(self.nodes[node].connections)
 
     @property
@@ -46,6 +48,7 @@ class Graph(object):
 
     @property
     def all_edges(self):
+        """ Returns a list of all edges in this graph. """
         edges = []
         for start, node in self.nodes.items():
             for end, cost in node.connections:
@@ -53,6 +56,16 @@ class Graph(object):
                     (end, start, cost) not in edges:
                     edges.append((start, end, cost))
         return edges
+
+    def edge_cost(self, start, end):
+        """ Search for this edge. """
+        for tail, cost in self.nodes[start].connections:
+            if tail == end:
+                return cost
+        for start, cost in self.nodes[end].connections:
+            if start == end:
+                return cost
+        raise ValueError('Edge not found.')
 
     def __len__(self):
         return len(self.nodes)
