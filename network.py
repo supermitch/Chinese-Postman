@@ -50,7 +50,8 @@ class Graph(object):
 
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
-        return [k for k, v in self.nodes.items() if my_math.is_even(v.order)]
+        return [k for k, v in self.nodes.items() \
+                if not my_math.is_even(v.order)]
 
     def node_options(self, node):
         """ Returns a list of (node, cost) tuples connected. """

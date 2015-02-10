@@ -71,9 +71,7 @@ def eularian_path(graph, start=None, circuit=False):
 def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
     odd_nodes = graph.odd_nodes()
-    print(odd_nodes)
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
-    print(combos)
     no_of_pairs = len(odd_nodes) / 2
 
     set_no = 0
