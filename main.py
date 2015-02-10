@@ -10,7 +10,7 @@ import argparse
 
 import data.data
 import eularian
-import graph as gr
+import network
 
 def setup_args():
     """ Setup argparse to take graph name argument. """
@@ -20,46 +20,47 @@ def setup_args():
     return args.graph
 
 def main():
-    graph = [  # Eularian
-        ('AB', 4),
-        ('AC', 3),
-        ('AD', 5),
-        ('BC', 3),
-        ('CD', 5),
+    data = [  # Eularian
+        (1, 2, 4),
+        (1, 3, 3),
+        (1, 4, 5),
+        (2, 3, 3),
+        (3, 4, 5),
     ]
-    graph = [  # Non-Eularian
-        ('AB', 4),
-        ('AC', 3),
-        ('AE', 10),
-        ('BC', 2),
-        ('BD', 3),
-        ('CD', 3),
-        ('DE', 9),
+    data = [  # Non-Eularian
+        (1, 2, 4),
+        (1, 3, 3),
+        (1, 5, 10),
+        (2, 3, 2),
+        (2, 4, 3),
+        (3, 4, 3),
+        (4, 5, 9),
     ]
-    graph = [
-        ('AB', 4),
-        ('BC', 3),
-        ('CD', 2),
-        ('BD', 3),
-        ('ED', 2),
-        ('DA', 3),
+    data = [
+        (1, 2, 4),
+        (2, 3, 3),
+        (3, 4, 2),
+        (2, 4, 3),
+        (5, 4, 2),
+        (4, 1, 3),
     ]
     graph_name = setup_args()
     try:
-        graph = getattr(data.data, graph_name)
+        data = getattr(data.data, data_name)
     except AttributeError:
         print('\tInvalid graph name, using default.')
     except TypeError:
         pass  # None is ok, use default
 
-    if not gr.is_eularian(graph):
+    graph = network.Graph(data)
+    if not graph.is_eularian:
         print('Converting to Eularian path...')
         graph, min_cost = eularian.make_eularian(graph)
         print('\tAdded cost is {}'.format(min_cost))
-        print('\tTotal cost is {}'.format(gr.total_cost(graph)))
+        print('\tTotal cost is {}'.format(graph.total_cost))
 
     print('Attempting to solve Eularian Circuit...')
-    route, attempts = eularian.eularian_path(graph, start='A')
+    route, attempts = eularian.eularian_path(graph, start=1)
     if not route:
         print('\tGave up after {} attempts.'.format(attempts))
     else:

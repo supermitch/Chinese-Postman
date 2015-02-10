@@ -130,23 +130,7 @@ def make_eularian(graph):
     return new_graph, min_cost
 
 
-def main():
-    """ Run a test on a known Eularian graph. """
-    graph = [  # Semi-Eularian
-        ('AB', 4),
-        ('AC', 3),
-        ('AD', 5),
-        ('BC', 3),
-        ('CD', 5),
-    ]
-    if gr.is_semi_eularian(graph):
-        print('Graph: {}'.format(graph))
-        print('Graph is semi-Eularian')
-        route, attempts = eularian_path(graph, start='A')
-        print('Solution in {} attempts: {}'.format(attempts, route))
-    else:
-        print('Non-Eularian graph, cannot solve.')
-
 if __name__ == '__main__':
-    main()
+    import tests.run_tests
+    tests.run_tests.run(['eularian'])
 
