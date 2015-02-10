@@ -4,10 +4,12 @@ import network
 
 class TestGraph(unittest.TestCase):
 
-    def test_all_nodes(self):
-        graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
-        expected = [1, 2, 3, 4]
-        self.assertEqual(expected, graph.all_nodes())
+    def setUp(self):
+        self.graph = network.Graph([(1,2,4), (1,4,4), (2,4,1),
+                                   (2,3,4), (3,4,4)])
+
+    def test_node_keys(self):
+        self.assertEqual([1, 2, 3, 4], self.graph.node_keys())
 
     def test_node_options_correct(self):
         graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
@@ -25,4 +27,20 @@ class TestGraph(unittest.TestCase):
     def test_edge_cost_correct(self):
         graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
         self.assertNotEqual(1, graph.edge_cost(1, 2))
+
+    def test_remove_edge_correct(self):
+        graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
+        graph.remove_edge((1,4,4))
+        expected = [(1,2,4), (2,4,1), (2,3,4), (3,4,4)]
+        self.assertEqual(expected, graph.all_edges)
+
+    def test_remove_edges_correct(self):
+        graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
+        graph.remove_edges([(1,4,4), (2,3,4)])
+        expected = [(1,2,4), (2,4,1), (3,4,4)]
+        self.assertEqual(expected, graph.all_edges)
+
+    def test_edge_options(self):
+        expected = [(1,2,4), (1,4,4)]
+        self.assertEqual(expected, self.graph.edge_options(1))
 

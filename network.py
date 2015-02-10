@@ -19,13 +19,33 @@ class Graph(object):
         if not directed:
             self.nodes[end].add_connection(start, cost)
 
+    def remove_edges(self, edges):
+        """ Removes a list of edges. """
+        for edge in edges:
+            self.remove_edge(edge)
+
+    def remove_edge(self, edge):
+        """ Remove an edge, plus node if it's disconnected. """
+        start, end, cost = edge
+        if start in self.nodes:
+            node = self.nodes[start]
+            if (end, cost) in node.connections:
+                node.remove_connection(end, cost)
+            if not node.connections:
+                del self.nodes[start]  # Remove start node
+        if end in self.nodes:
+            node = self.nodes[end]
+            if (start, cost) in node.connections:
+                node.remove_connection(start, cost)
+            if not node.connections:
+                del self.nodes[end]  # Remove end node
+
     def add_node(self, key):
         """ Add an unconnected node. """
         self.nodes[key] = Node(key)
 
-    def all_nodes(self):
+    def node_keys(self):
         """ Return a list of all node keys in this graph. """
-        #return [x for x in sorted(self.nodes)]
         return sorted(self.nodes.keys())
 
     def odd_nodes(self):
@@ -57,6 +77,11 @@ class Graph(object):
                     edges.append((start, end, cost))
         return edges
 
+    def edge_options(self, start):
+        """ Return available edges for a given node. """
+        return [(start, end, cost) for end, cost in \
+                self.nodes[start].connections]
+
     def edge_cost(self, start, end):
         """ Search for this edge. """
         for tail, cost in self.nodes[start].connections:
@@ -81,10 +106,22 @@ class Node(object):
     def add_connection(self, node, cost):
         self.connections.append((node, cost))
 
+    def remove_connection(self, node, cost):
+        self.connections.remove((node, cost))
+
     @property
     def order(self):
         """ The number of connections this node has. """
         return len(self.connections)
+
+
+class Edge(object):
+    """ A connection between nodes. """
+    def __init__(self, start, end, weight=0, directed=False):
+        self.start = start
+        self.end = end
+        self.weight = weight
+        self.directed = directed
 
 
 if __name__ == '__main__':
