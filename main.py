@@ -20,16 +20,18 @@ def setup_args():
     return args.graph
 
 def main():
+    """ Make it so. """
 
+    edges = None
     graph_name = setup_args()
     try:
-        data = getattr(data.data, data_name)
+        edges = getattr(data.data, graph_name)
     except AttributeError:
         print('\tInvalid graph name, using default.')
     except TypeError:
         pass  # None is ok, use default
 
-    graph = network.Graph(data)
+    graph = network.Graph(edges)
     if not graph.is_eularian:
         print('Converting to Eularian path...')
         graph, min_cost = eularian.make_eularian(graph)
