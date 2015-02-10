@@ -13,11 +13,11 @@ class Graph(object):
         """ Adds a Node to our graph and adds node connections. """
         if start not in self.nodes:
             self.add_node(start)
-            self.nodes[start].add_connection(end, cost)
+        self.nodes[start].add_connection(end, cost)
         if end not in self.nodes:
             self.add_node(end)
-            if not directed:
-                self.nodes[end].add_connection(start, cost)
+        if not directed:
+            self.nodes[end].add_connection(start, cost)
 
     def add_node(self, key):
         self.nodes[key] = Node(key)
@@ -32,7 +32,7 @@ class Graph(object):
         return [x for x in self.nodes.values() if my_math.is_even(x.order)]
 
     def node_options(self, node):
-        return sorted(self.nodes[node].connections.keys())
+        return sorted(self.nodes[node].connections)
 
     @property
     def is_eularian(self):
@@ -47,8 +47,8 @@ class Graph(object):
     @property
     def all_edges(self):
         edges = []
-        for start in self.nodes.values():
-            for end, cost in start.connections:
+        for start, node in self.nodes.items():
+            for end, cost in node.connections:
                 if (start, end, cost) not in edges and \
                     (end, start, cost) not in edges:
                     edges.append((start, end, cost))
@@ -72,6 +72,7 @@ class Node(object):
     def order(self):
         """ The number of connections this node has. """
         return len(self.connections)
+
 
 if __name__ == '__main__':
     import tests.run_tests
