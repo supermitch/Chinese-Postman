@@ -44,10 +44,12 @@ class Graph(object):
         """ Add an unconnected node. """
         self.nodes[key] = Node(key)
 
+    @property
     def node_keys(self):
         """ Return a list of all node keys in this graph. """
         return sorted(self.nodes.keys())
 
+    @property
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
         return [k for k, v in self.nodes.items() \
@@ -60,7 +62,7 @@ class Graph(object):
     @property
     def is_eularian(self):
         """ Return True if all nodes are of even order. """
-        return len(self.odd_nodes()) == 0
+        return len(self.odd_nodes) == 0
 
     @property
     def is_semi_eularian(self):
@@ -85,6 +87,7 @@ class Graph(object):
 
     def edge_cost(self, start, end):
         """ Search for this edge. """
+        # TODO: Parallel edges would have 2 costs
         for tail, cost in self.nodes[start].connections:
             if tail == end:
                 return cost
@@ -92,6 +95,11 @@ class Graph(object):
             if start == end:
                 return cost
         raise ValueError('Edge not found.')
+
+    @property
+    def total_cost(self):
+        """ Return the total cost of this graph. """
+        return sum(self.edge_cost(h, t) for h, t, _ in self.all_edges)
 
     def __len__(self):
         return len(self.nodes)

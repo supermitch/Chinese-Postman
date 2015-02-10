@@ -28,6 +28,9 @@ class TestGraph(unittest.TestCase):
         graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
         self.assertNotEqual(1, graph.edge_cost(1, 2))
 
+    def test_total_cost_correct(self):
+        self.assertEqual(17, self.graph.total_cost)
+
     def test_remove_edge_correct(self):
         graph = network.Graph([(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)])
         graph.remove_edge((1,4,4))
