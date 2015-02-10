@@ -44,3 +44,13 @@ class TestGraph(unittest.TestCase):
         expected = [(1,2,4), (1,4,4)]
         self.assertEqual(expected, self.graph.edge_options(1))
 
+class TestNode(unittest.TestCase):
+
+    def test_node_order_odd(self):
+        node = network.Node(1, [(2,4), (4,4), (3,1)])
+        self.assertEqual(3, node.order)
+
+    def test_node_order_even(self):
+        node = network.Node(1, [(2,4), (4,4)])
+        self.assertEqual(2, node.order)
+

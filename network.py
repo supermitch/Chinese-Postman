@@ -50,7 +50,7 @@ class Graph(object):
 
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
-        return [x for x in self.nodes.values() if my_math.is_even(x.order)]
+        return [k for k, v in self.nodes.items() if my_math.is_even(v.order)]
 
     def node_options(self, node):
         """ Returns a list of (node, cost) tuples connected. """
@@ -99,14 +99,19 @@ class Graph(object):
 class Node(object):
     """ A representation of a vertex in a graph. """
 
-    def __init__(self, key):
+    def __init__(self, key, connections=None):
         self.key = key
-        self.connections = []  # List of (node, cost) tuples
+        self.connections = []
+        if connections:
+            for end, cost in connections:
+                self.add_connection(end, cost)
 
     def add_connection(self, node, cost):
+        """ Add a connection to this node. """
         self.connections.append((node, cost))
 
     def remove_connection(self, node, cost):
+        """ Remove a connection from this node. """
         self.connections.remove((node, cost))
 
     @property
