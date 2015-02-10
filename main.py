@@ -20,30 +20,7 @@ def setup_args():
     return args.graph
 
 def main():
-    data = [  # Eularian
-        (1, 2, 4),
-        (1, 3, 3),
-        (1, 4, 5),
-        (2, 3, 3),
-        (3, 4, 5),
-    ]
-    data = [  # Non-Eularian
-        (1, 2, 4),
-        (1, 3, 3),
-        (1, 5, 10),
-        (2, 3, 2),
-        (2, 4, 3),
-        (3, 4, 3),
-        (4, 5, 9),
-    ]
-    data = [
-        (1, 2, 4),
-        (2, 3, 3),
-        (3, 4, 2),
-        (2, 4, 3),
-        (5, 4, 2),
-        (4, 1, 3),
-    ]
+
     graph_name = setup_args()
     try:
         data = getattr(data.data, data_name)

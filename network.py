@@ -24,7 +24,7 @@ class Graph(object):
         self.nodes[key] = Node(key)
 
     def all_nodes(self):
-        """ Return a list of all nodes in this graph. """
+        """ Return a list of all node keys in this graph. """
         #return [x for x in sorted(self.nodes)]
         return sorted(self.nodes.keys())
 
