@@ -113,13 +113,13 @@ def find_minimum_path_set(path_sets, set_routes, set_costs):
 
 def add_new_edges(graph, min_route):
     """ Return new graph w/ new edges extracted from minimum route. """
-    new_edges = []
+    new_graph = copy.deepcopy(graph)
     for node in min_route:
         for i in range(len(node) - 1):
-            edge = node[i] + node[i + 1]
-            cost = gr.edge_cost(edge, graph)  # Look up existing edge cost
-            new_edges.append((edge, cost))  # Append new edges
-    return graph + new_edges
+            start, end = node[i], node[i + 1]
+            cost = graph.edge_cost(start, end)  # Look up existing edge cost
+            new_graph.add_edge(start, end, cost)  # Append new edges
+    return new_graph
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
