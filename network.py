@@ -9,6 +9,11 @@ class Graph(object):
             for start, end, cost in graph:
                 self.add_edge(start, end, cost)
 
+    def add_edges(self, edges):
+        """ Add a list of edges. """
+        for start, end, cost in edges:
+            self.add_edge(start, end, cost)
+
     def add_edge(self, start, end, cost=0, directed=False):
         """ Adds a Node to our graph and adds node connections. """
         if start not in self.nodes:
@@ -87,7 +92,7 @@ class Graph(object):
 
     def edge_cost(self, start, end):
         """ Search for this edge. """
-        # TODO: Parallel edges would have 2 costs
+        # TODO: Parallel edges would have 2 costs, return minimum
         for tail, cost in self.nodes[start].connections:
             if tail == end:
                 return cost
