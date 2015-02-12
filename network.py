@@ -31,13 +31,6 @@ class Graph(object):
         for key in matches.keys():
             del self.edges[key]
 
-        # Remove associated nodes
-        head, tail = args[0], args[1]
-        if not self.node_options(head):
-            del self.nodes[head]
-        if not self.node_options(tail):
-            del self.nodes[tail]
-
     @property
     def nodes(self):
         return set([node for edge in self.edges.values() \
@@ -84,6 +77,11 @@ class Graph(object):
         return self.edges.values()
 
     def find_edge(self, head, tail, cost=None, directed=None):
+        """
+        Returns a dictionary of matching edges.
+
+        Of the given parameters, `cost` and `directed` are optional.
+        """
         results = {}
         for key, edge in self.edges.items():
             if not cost and not directed:
@@ -141,6 +139,14 @@ class Edge(object):
     def __repr__(self):
         return 'Edge({}, {}, {}, {})'.format(self.head, self.tail,
                                              self.weight, self.directed)
+    def end(self, node):
+        if node == self.head:
+            return self.tail
+        elif node == self.tail:
+            return self.head
+        else:
+            raise ValueError('Node ({}) not in edge ({})'.format(node, self))
+
     @property
     def contents(self):
         return (self.head, self.tail, self.weight, self.directed)
