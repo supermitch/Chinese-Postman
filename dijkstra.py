@@ -35,13 +35,12 @@ def find_cost(path, graph):
     node = start
     while unvisited:  # While we still have unvisited nodes
         for option in graph.edge_options(node):
-            next_node = option[1]
+            next_node = option.end(node)
             if next_node not in unvisited:
                 continue  # Don't go backwards
-            cost = option[2]
             # If this path was cheaper than the prior cost, update it
-            if node_costs[next_node] > node_costs[node] + cost:
-                node_costs[next_node] = node_costs[node] + cost
+            if node_costs[next_node] > node_costs[node] + option.weight:
+                node_costs[next_node] = node_costs[node] + option.weight
                 previous_nodes[next_node] = node
         unvisited.remove(node)
         # Next node must be closest unvisited node:
