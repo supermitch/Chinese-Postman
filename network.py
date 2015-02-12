@@ -113,6 +113,10 @@ class Graph(object):
         """ Return the total cost of this graph. """
         return sum(x.weight for x in self.edges.values() if x.weight)
 
+    def is_bridge(self, edge):
+        """ Determine if edge is a bridge. """
+        return True
+
     def __len__(self):
         return len(self.edges)
 
@@ -139,7 +143,15 @@ class Edge(object):
     def __repr__(self):
         return 'Edge({}, {}, {}, {})'.format(self.head, self.tail,
                                              self.weight, self.directed)
+
+    def __len__(self):
+        """ How many attribs we have. Kinda weird... """
+        return len([x for x in \
+            (self.head, self.tail, self.weight, self.directed) \
+            if x is not None])
+
     def end(self, node):
+        """ Find the opposite end of this edge, given a node. """
         if node == self.head:
             return self.tail
         elif node == self.tail:
@@ -149,6 +161,7 @@ class Edge(object):
 
     @property
     def contents(self):
+        """ A tuple containing edge contents. """
         return (self.head, self.tail, self.weight, self.directed)
 
 if __name__ == '__main__':
