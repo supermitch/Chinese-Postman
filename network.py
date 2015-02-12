@@ -4,7 +4,6 @@ class Graph(object):
     """ Abstract representation of a graph. """
 
     def __init__(self, data=None):
-        self.nodes = set()
         self.edges = {}
         if data:
             self.add_edges(data)
@@ -20,14 +19,6 @@ class Graph(object):
     def add_edge(self, *args):
         """ Adds an Edge to our graph. """
         self.edges[len(self.edges)] = Edge(*args)
-        try:
-            self.add_node(args[0])
-        except IndexError:
-            pass
-        try:
-            self.add_node(args[1])
-        except IndexError:
-            pass
 
     def remove_edges(self, edges):
         """ Removes a list of edges. """
@@ -47,10 +38,10 @@ class Graph(object):
         if not self.node_options(tail):
             del self.nodes[tail]
 
-    def add_node(self, key):
-        """ Add an unconnected node. """
-        self.nodes.add(key)
-
+    @property
+    def nodes(self):
+        return set([node for edge in self.edges.values() \
+                    for node in (edge.head, edge.tail)])
     @property
     def node_keys(self):
         """ Return a list of all node keys in this graph. """
