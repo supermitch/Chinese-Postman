@@ -6,6 +6,7 @@ class TestGraph(unittest.TestCase):
 
     def setUp(self):
         """ Set up a default graph. """
+        # Two very wide, flat triangles, Semi-Eularian
         self.edges = [(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)]
         self.graph = Graph(self.edges)
 
