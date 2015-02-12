@@ -74,7 +74,7 @@ class Graph(object):
     @property
     def all_edges(self):
         """ Returns a list of all edges in this graph. """
-        return self.edges.values()
+        return list(self.edges.values())
 
     def find_edge(self, head, tail, cost=None, directed=None):
         """
