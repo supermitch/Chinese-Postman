@@ -1,19 +1,19 @@
 import unittest
 
-import network
+from network import Graph, Edge
 
 class TestGraph(unittest.TestCase):
 
     def setUp(self):
         """ Set up a default graph. """
         self.edges = [(1,2,4), (1,4,4), (2,4,1), (2,3,4), (3,4,4)]
-        self.graph = network.Graph(self.edges)
+        self.graph = Graph(self.edges)
 
     def test_node_keys(self):
         self.assertEqual([1, 2, 3, 4], self.graph.node_keys)
 
-    def test_node_options_correct(self):
-        self.assertEqual([(2, 4), (4, 4)], self.graph.node_options(1))
+    def test_odd_nodes(self):
+        self.assertEqual([2, 4], self.graph.odd_nodes)
 
     def test_all_edges_correct(self):
         self.assertEqual(self.edges, self.graph.all_edges)
@@ -31,23 +31,23 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(17, self.graph.total_cost)
 
     def test_add_edge_correct_easy(self):
-        graph = network.Graph([(1,2,1)])  # One edge, two nodes
+        graph = Graph([(1,2,1)])  # One edge, two nodes
         graph.add_edge(2, 3, 2)  # Add an edge from 2 to 3 w/ cost 2
         self.assertEqual([(1,2,1), (2,3,2)], graph.all_edges)
 
     def test_add_edge_correct_duplicate(self):
-        graph = network.Graph([(1,2,1)])  # One edge, two nodes
+        graph = Graph([(1,2,1)])  # One edge, two nodes
         graph.add_edge(1, 2, 1)  # Add a parallel edge
         self.assertEqual([(1,2,1), (1,2,1)], graph.all_edges)
 
     def test_remove_edge_correct(self):
-        graph = network.Graph(self.edges)
-        graph.remove_edge((1,4,4))
+        graph = Graph(self.edges)
+        graph.remove_edge(1,4,4)
         expected = [(1,2,4), (2,4,1), (2,3,4), (3,4,4)]
         self.assertEqual(expected, graph.all_edges)
 
     def test_remove_edges_correct(self):
-        graph = network.Graph(self.edges)
+        graph = Graph(self.edges)
         graph.remove_edges([(1,4,4), (2,3,4)])
         expected = [(1,2,4), (2,4,1), (3,4,4)]
         self.assertEqual(expected, graph.all_edges)
@@ -58,44 +58,49 @@ class TestGraph(unittest.TestCase):
 
     def test_is_eularian_true(self):
         # A simple Eularian diamond
-        graph = network.Graph([(1,2,1), (2,3, 1), (3,4,1), (4,1,1)])
+        graph = Graph([(1,2,1), (2,3, 1), (3,4,1), (4,1,1)])
         self.assertTrue(graph.is_eularian)
 
     def test_is_eularian_false_semi_eularian(self):
         # Diamond w/ one crossing edge: semi-Eularian
-        graph = network.Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2)])
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2)])
         self.assertFalse(graph.is_eularian)
 
     def test_is_eularian_false_non_eularian(self):
         # Diamond w/ two crossing edges: non-Eularian
-        graph = network.Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
                  (1,3,2)])
         self.assertFalse(graph.is_eularian)
 
     def test_is_semi_eularian_false_eularian(self):
         # A simple Eularian diamond
-        graph = network.Graph([(1,2,1), (2,3, 1), (3,4,1), (4,1,1)])
+        graph = Graph([(1,2,1), (2,3, 1), (3,4,1), (4,1,1)])
         self.assertFalse(graph.is_semi_eularian)
 
     def test_is_semi_eularian_true(self):
         # Diamond w/ one crossing edge: semi-Eularian
-        graph = network.Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2)])
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2)])
         self.assertTrue(graph.is_semi_eularian)
 
     def test_is_semi_eularian_false_non_eularian(self):
         # Diamond w/ two crossing edges: non-Eularian
-        graph = network.Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
                  (1,3,2)])
         self.assertFalse(graph.is_semi_eularian)
 
 
-class TestNode(unittest.TestCase):
+class TestEdge(unittest.TestCase):
 
-    def test_node_order_odd(self):
-        node = network.Node(1, [(2,4), (4,4), (3,1)])
-        self.assertEqual(3, node.order)
+    def setUp(self):
+        self.edge = Edge(1, 2, 3, True)
 
-    def test_node_order_even(self):
-        node = network.Node(1, [(2,4), (4,4)])
-        self.assertEqual(2, node.order)
+    def test_edge_instance_equal(self):
+        self.assertEqual((1, 2, 3, True), self.edge)
+
+    def test_edge_instance_unequal(self):
+        self.assertNotEqual((1, 2, 3, False), self.edge)
+
+    def test_edge_instance_short(self):
+        edge = Edge(1, 2)
+        self.assertEqual((1, 2, 0, False), edge)
 

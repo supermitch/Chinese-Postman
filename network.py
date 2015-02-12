@@ -9,17 +9,8 @@ class Graph(object):
         if data:
             self.add_edges(data)
 
-    def __eq__(self, other):
-        if isinstance(other, self.__class__):
-            return self.__dict__ == other.__dict__
-        else:
-            return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __repr__(self):
-        return 'Graph({})'.format(str(self.all_edges))
+        return 'Graph({})'.format(str(self.edges))
 
     def add_edges(self, edges):
         """ Add a list of edges. """
@@ -30,53 +21,61 @@ class Graph(object):
         """ Adds an Edge to our graph. """
         self.edges[len(self.edges)] = Edge(*args)
         try:
-            self.nodes.add(args[0])
+            self.add_node(args[0])
         except IndexError:
             pass
         try:
-            self.nodes.add(args[1])
+            self.add_node(args[1])
         except IndexError:
             pass
 
     def remove_edges(self, edges):
         """ Removes a list of edges. """
         for edge in edges:
-            self.remove_edge(edge)
+            self.remove_edge(*edge)
 
-    def remove_edge(self, edge):
+    def remove_edge(self, *args):
         """ Remove an edge, plus node if it's disconnected. """
-        start, end, cost = edge
-        if start in self.nodes:
-            node = self.nodes[start]
-            if (end, cost) in node.connections:
-                node.remove_connection(end, cost)
-            if not node.connections:
-                del self.nodes[start]  # Remove start node
-        if end in self.nodes:
-            node = self.nodes[end]
-            if (start, cost) in node.connections:
-                node.remove_connection(start, cost)
-            if not node.connections:
-                del self.nodes[end]  # Remove end node
+        matches = self.find_edge(*args)
+        for key in matches.keys():
+            del self.edges[key]
+
+        # Remove associated nodes
+        head, tail = args[0], args[1]
+        if not self.node_options(head):
+            del self.nodes[head]
+        if not self.node_options(tail):
+            del self.nodes[tail]
 
     def add_node(self, key):
         """ Add an unconnected node. """
-        self.nodes[key] = Node(key)
+        self.nodes.add(key)
 
     @property
     def node_keys(self):
         """ Return a list of all node keys in this graph. """
-        return sorted(self.nodes.keys())
+        return sorted(self.nodes)
+
+    @property
+    def node_orders(self):
+        """ Return how many connections a node has. """
+        return {x: len(self.edge_options(x)) for x in self.nodes}
 
     @property
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
-        return [k for k, v in self.nodes.items() \
-                if not my_math.is_even(v.order)]
+        return [k for k in self.nodes if not \
+                my_math.is_even(self.node_orders[k])]
 
     def node_options(self, node):
         """ Returns a list of (node, cost) tuples connected. """
-        return sorted(self.nodes[node].connections)
+        options = []
+        for edge in self.edges.values():
+            if edge.head == node:
+                options.append(edge.tail)
+            elif edge.tail == node:
+                options.append(edge.head)
+        return sorted(options)
 
     @property
     def is_eularian(self):
@@ -91,37 +90,42 @@ class Graph(object):
     @property
     def all_edges(self):
         """ Returns a list of all edges in this graph. """
-        edges = []
-        for start, node in self.nodes.items():
-            for end, cost in node.connections:
-                if (start, end, cost) not in edges and \
-                    (end, start, cost) not in edges:
-                    edges.append((start, end, cost))
-        return edges
+        return self.edges.values()
 
-    def edge_options(self, start):
+    def find_edge(self, head, tail, cost=None, directed=None):
+        results = {}
+        for key, edge in self.edges.items():
+            if not cost and not directed:
+                if (head, tail) == (edge.head, edge.tail) or \
+                   (tail, head) == (edge.head, edge.tail):
+                    results[key] = edge
+            elif not directed:
+                if (head, tail, cost) == edge or \
+                   (tail, head, cost) == edge:
+                    results[key] = edge
+            else:
+                if directed and (head, tail, cost, directed) == edge:
+                    results[key] = edge
+                elif (tail, head, cost, directed) == edge:
+                    results[key] = edge
+        return results
+
+    def edge_options(self, node):
         """ Return available edges for a given node. """
-        return [(start, end, cost) for end, cost in \
-                self.nodes[start].connections]
+        return [x for x in self.edges.values() if node in (x.head, x.tail)]
 
-    def edge_cost(self, start, end):
+    def edge_cost(self, *args):
         """ Search for this edge. """
-        # TODO: Parallel edges would have 2 costs, return minimum
-        for tail, cost in self.nodes[start].connections:
-            if tail == end:
-                return cost
-        for start, cost in self.nodes[end].connections:
-            if start == end:
-                return cost
-        raise ValueError('Edge not found.')
+        weight = min([edge.weight for edge in self.find_edge(*args).values() if edge.weight])
+        return weight
 
     @property
     def total_cost(self):
         """ Return the total cost of this graph. """
-        return sum(self.edge_cost(h, t) for h, t, _ in self.all_edges)
+        return sum(x.weight for x in self.edges.values() if x.weight)
 
     def __len__(self):
-        return len(self.nodes)
+        return len(self.edges)
 
 
 class Edge(object):
@@ -135,9 +139,20 @@ class Edge(object):
         for attr, value in zip(attrs, args):
             setattr(self, attr, value)
 
+    def __eq__(self, other):
+        if len(other) == 3:
+            other = other + (False,)  # Assume undirected
+        return (self.head, self.tail, self.weight, self.directed) == other
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __repr__(self):
         return 'Edge({}, {}, {}, {})'.format(self.head, self.tail,
                                              self.weight, self.directed)
+    @property
+    def contents(self):
+        return (self.head, self.tail, self.weight, self.directed)
 
 if __name__ == '__main__':
     import tests.run_tests
