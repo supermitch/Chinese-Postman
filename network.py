@@ -3,26 +3,40 @@ import my_math
 class Graph(object):
     """ Abstract representation of a graph. """
 
-    def __init__(self, graph=None):
-        self.nodes = {}
-        if graph:
-            for start, end, cost in graph:
-                self.add_edge(start, end, cost)
+    def __init__(self, data=None):
+        self.nodes = set()
+        self.edges = {}
+        if data:
+            self.add_edges(data)
+
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.__dict__ == other.__dict__
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __repr__(self):
+        return 'Graph({})'.format(str(self.all_edges))
 
     def add_edges(self, edges):
         """ Add a list of edges. """
-        for start, end, cost in edges:
-            self.add_edge(start, end, cost)
+        for edge in edges:
+            self.add_edge(*edge)
 
-    def add_edge(self, start, end, cost=0, directed=False):
-        """ Adds a Node to our graph and adds node connections. """
-        if start not in self.nodes:
-            self.add_node(start)
-        self.nodes[start].add_connection(end, cost)
-        if end not in self.nodes:
-            self.add_node(end)
-        if not directed:
-            self.nodes[end].add_connection(start, cost)
+    def add_edge(self, *args):
+        """ Adds an Edge to our graph. """
+        self.edges[len(self.edges)] = Edge(*args)
+        try:
+            self.nodes.add(args[0])
+        except IndexError:
+            pass
+        try:
+            self.nodes.add(args[1])
+        except IndexError:
+            pass
 
     def remove_edges(self, edges):
         """ Removes a list of edges. """
@@ -110,38 +124,20 @@ class Graph(object):
         return len(self.nodes)
 
 
-class Node(object):
-    """ A representation of a vertex in a graph. """
-
-    def __init__(self, key, connections=None):
-        self.key = key
-        self.connections = []
-        if connections:
-            for end, cost in connections:
-                self.add_connection(end, cost)
-
-    def add_connection(self, node, cost):
-        """ Add a connection to this node. """
-        self.connections.append((node, cost))
-
-    def remove_connection(self, node, cost):
-        """ Remove a connection from this node. """
-        self.connections.remove((node, cost))
-
-    @property
-    def order(self):
-        """ The number of connections this node has. """
-        return len(self.connections)
-
-
 class Edge(object):
     """ A connection between nodes. """
-    def __init__(self, start, end, weight=0, directed=False):
-        self.start = start
-        self.end = end
-        self.weight = weight
-        self.directed = directed
+    def __init__(self, *args):
+        self.head = None  # Start node
+        self.tail = None  # End node
+        self.weight = 0  # Cost
+        self.directed = False  # Undirected by default
+        attrs = ('head', 'tail', 'weight', 'directed')
+        for attr, value in zip(attrs, args):
+            setattr(self, attr, value)
 
+    def __repr__(self):
+        return 'Edge({}, {}, {}, {})'.format(self.head, self.tail,
+                                             self.weight, self.directed)
 
 if __name__ == '__main__':
     import tests.run_tests
