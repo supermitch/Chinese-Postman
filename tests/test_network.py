@@ -89,6 +89,18 @@ class TestGraph(unittest.TestCase):
                  (1,3,2)])
         self.assertFalse(graph.is_semi_eularian)
 
+    def test_is_bridge_true(self):
+        #  Two triangles joined by 'CD'
+        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1),
+                      (5,6,1)])
+        self.assertTrue(graph.is_bridge((3,4,1)))
+
+    def test_is_bridge_false(self):
+        #  Two triangles joined by 'CD'
+        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1),
+                      (5,6,1)])
+        self.assertFalse(graph.is_bridge((2,3,1)))
+
 
 class TestEdge(unittest.TestCase):
 
