@@ -30,6 +30,16 @@ class TestGraph(unittest.TestCase):
     def test_total_cost_correct(self):
         self.assertEqual(17, self.graph.total_cost)
 
+    def test_add_edge_correct_easy(self):
+        graph = network.Graph([(1,2,1)])  # One edge, two nodes
+        graph.add_edge(2, 3, 2)  # Add an edge from 2 to 3 w/ cost 2
+        self.assertEqual([(1,2,1), (2,3,2)], graph.all_edges)
+
+    def test_add_edge_correct_duplicate(self):
+        graph = network.Graph([(1,2,1)])  # One edge, two nodes
+        graph.add_edge(1, 2, 1)  # Add a parallel edge
+        self.assertEqual([(1,2,1), (1,2,1)], graph.all_edges)
+
     def test_remove_edge_correct(self):
         graph = network.Graph(self.edges)
         graph.remove_edge((1,4,4))
