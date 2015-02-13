@@ -23,7 +23,7 @@ class Graph(object):
     def remove_edges(self, edges):
         """ Removes a list of edges. """
         for edge in edges:
-            self.remove_edge(*edge)
+            self.remove_edge(*edge.contents)
 
     def remove_edge(self, *args):
         """ Remove an edge, plus node if it's disconnected. """
