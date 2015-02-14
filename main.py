@@ -31,15 +31,18 @@ def main():
     except TypeError:
         pass  # None is ok, use default
 
-    graph = network.Graph(edges)
-    if not graph.is_eularian:
+    orig_graph = network.Graph(edges)
+
+    print('Original graph has {} edges'.format(len(orig_graph)))
+    if not orig_graph.is_eularian:
         print('Converting to Eularian path...')
-        graph, min_cost = eularian.make_eularian(graph)
+        graph, min_cost = eularian.make_eularian(orig_graph)
+        print('\tAdded {} edges'.format(len(graph) - len(orig_graph)))
         print('\tAdded cost is {}'.format(min_cost))
         print('\tTotal cost is {}'.format(graph.total_cost))
 
     print('Attempting to solve Eularian Circuit...')
-    route, attempts = eularian.eularian_path(graph, start=1)
+    route, attempts = eularian.eularian_path(graph, start=28)
     if not route:
         print('\tGave up after {} attempts.'.format(attempts))
     else:
