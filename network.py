@@ -1,3 +1,4 @@
+import copy
 import my_math
 
 class Graph(object):
@@ -27,11 +28,16 @@ class Graph(object):
 
     def remove_edge(self, *args):
         """ Remove an edge, plus node if it's disconnected. """
-        matches = self.find_edge(*args)  # Returns all matches
-        del self.edges[matches.keys()[0]]  # Delete first match only
+        if len(args) == 1 and isinstance(args[0], int):
+            del self.edges[args[0]]
+        else:
+            match = self.find_edge(*args)  # Returns all matches
+            del self.edges[match.keys()[0]]  # Delete first match only
+
 
     @property
     def nodes(self):
+        """ Return a set of all node indices in this graph. """
         return set([node for edge in self.edges.values() \
                     for node in (edge.head, edge.tail)])
     @property
@@ -51,7 +57,8 @@ class Graph(object):
                 my_math.is_even(self.node_orders[k])]
 
     def node_options(self, node):
-        """ Returns a list of (node, cost) tuples connected. """
+        """ Returns an ascending list of (node, cost) tuples connected
+        to this node. """
         options = []
         for edge in self.edges.values():
             if edge.head == node:
@@ -75,9 +82,9 @@ class Graph(object):
         """ Returns a list of all edges in this graph. """
         return list(self.edges.values())
 
-    def find_edge(self, head, tail, cost=None, directed=None):
+    def find_edges(self, head, tail, cost=None, directed=None):
         """
-        Returns a {key: edge} dictionary of matching edges.
+        Returns a {key: edge} dictionary of all matching edges.
 
         Of the given parameters, `cost` and `directed` are optional.
         """
@@ -98,13 +105,18 @@ class Graph(object):
                     results[key] = edge
         return results
 
+    def find_edge(self, head, tail, cost=None, directed=None):
+        """ Returns the first match for this edge. """
+        matches = self.find_edges(head, tail, cost, directed)
+        return dict((matches.popitem(),))  # One result only
+
     def edge_options(self, node):
         """ Return available edges for a given node. """
         return [x for x in self.edges.values() if node in (x.head, x.tail)]
 
     def edge_cost(self, *args):
         """ Search for this edge. """
-        weight = min([edge.weight for edge in self.find_edge(*args).values() if edge.weight])
+        weight = min([edge.weight for edge in self.find_edges(*args).values() if edge.weight])
         return weight
 
     @property
@@ -113,8 +125,41 @@ class Graph(object):
         return sum(x.weight for x in self.edges.values() if x.weight)
 
     def is_bridge(self, edge):
-        """ Determine if edge is a bridge. """
-        return True
+        """
+        Return True if an edge is a bridge.
+
+        Given an edge, utilize depth-first search to visit all
+        connected nodes. If DFS reaches all unvisited nodes, then the given
+        edge must not be a bridge.
+
+        """
+        graph = copy.deepcopy(self)
+        match = graph.find_edge(*edge.contents)
+        graph.remove_edge(match.keys()[0])  # Don't include the given edge
+
+        start = match.values()[0].tail  # Could start at either end.
+
+        stack = []
+        visited = set()  # Visited nodes
+        while True:
+            if start not in stack:
+                stack.append(start)
+            visited.add(start)
+            nodes = [x for x in graph.node_options(start) \
+                     if x not in visited]
+            if nodes:
+                start = nodes[0]  # Ascending
+            else:  # Dead end
+                try:
+                    stack.pop()
+                    start = stack[-1]  # Go back to the previous node
+                except IndexError:  # We are back to the beginning
+                    break
+
+        if len(visited) == len(self.nodes):  # We visited every node
+            return False  # ... therefore we did not disconnect the graph
+        else:
+            return True  # The edge is a bridge
 
     def __len__(self):
         return len(self.edges)
