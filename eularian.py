@@ -118,7 +118,7 @@ def add_new_edges(graph, min_route):
         for i in range(len(node) - 1):
             start, end = node[i], node[i + 1]
             cost = graph.edge_cost(start, end)  # Look up existing edge cost
-            new_graph.add_edge(start, end, cost)  # Append new edges
+            new_graph.add_edge(start, end, cost, False)  # Append new edges
     return new_graph
 
 def make_eularian(graph):
