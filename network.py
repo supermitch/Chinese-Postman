@@ -27,9 +27,8 @@ class Graph(object):
 
     def remove_edge(self, *args):
         """ Remove an edge, plus node if it's disconnected. """
-        matches = self.find_edge(*args)
-        for key in matches.keys():
-            del self.edges[key]
+        matches = self.find_edge(*args)  # Returns all matches
+        del self.edges[matches.keys()[0]]  # Delete first match only
 
     @property
     def nodes(self):
@@ -78,7 +77,7 @@ class Graph(object):
 
     def find_edge(self, head, tail, cost=None, directed=None):
         """
-        Returns a dictionary of matching edges.
+        Returns a {key: edge} dictionary of matching edges.
 
         Of the given parameters, `cost` and `directed` are optional.
         """

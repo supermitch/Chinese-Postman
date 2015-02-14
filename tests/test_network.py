@@ -49,8 +49,14 @@ class TestGraph(unittest.TestCase):
 
     def test_remove_edges_correct(self):
         graph = Graph(self.edges)
-        graph.remove_edges([(1,4,4), (2,3,4)])
+        graph.remove_edges([Edge(1,4,4), Edge(2,3,4)])
         expected = [(1,2,4), (2,4,1), (3,4,4)]
+        self.assertEqual(expected, graph.all_edges)
+
+    def test_remove_edge_duplicate_correct(self):
+        graph = Graph([(1,2,1), (1,2,1), (1,2,2), (2,3,1), (3,1,1)])
+        graph.remove_edge(1,2,1)
+        expected = [(1,2,1), (1,2,2), (2,3,1), (3,1,1)]
         self.assertEqual(expected, graph.all_edges)
 
     def test_edge_options(self):
