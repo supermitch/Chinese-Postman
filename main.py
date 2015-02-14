@@ -44,6 +44,7 @@ def main():
         print('\tGave up after {} attempts.'.format(attempts))
     else:
         print('\tSolved in {} attempts:\n{}'.format(attempts, route))
+        print('\t({} edges)'.format(len(route)))
 
 if __name__ == '__main__':
     main()
