@@ -32,7 +32,7 @@ class Graph(object):
             del self.edges[args[0]]
         else:
             match = self.find_edge(*args)  # Returns all matches
-            del self.edges[match.keys()[0]]  # Delete first match only
+            del self.edges[list(match.keys())[0]]  # Delete first match only
 
 
     @property
@@ -135,9 +135,9 @@ class Graph(object):
         """
         graph = copy.deepcopy(self)
         match = graph.find_edge(*edge.contents)
-        graph.remove_edge(match.keys()[0])  # Don't include the given edge
+        graph.remove_edge(list(match.keys())[0])  # Don't include the given edge
 
-        start = match.values()[0].tail  # Could start at either end.
+        start = list(match.values())[0].tail  # Could start at either end.
 
         stack = []
         visited = set()  # Visited nodes
