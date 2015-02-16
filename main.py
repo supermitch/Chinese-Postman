@@ -7,6 +7,7 @@ required to complete an Eularian circuit.
 
 """
 import argparse
+import sys
 
 import data.data
 import eularian
@@ -27,9 +28,10 @@ def main():
     try:
         edges = getattr(data.data, graph_name)
     except AttributeError:
-        print('\tInvalid graph name, using default.')
-    except TypeError:
-        pass  # None is ok, use default
+        print('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
+            '\n\t'.join([x for x in dir(data.data)
+            if not x.startswith('__')])))
+        sys.exit()
 
     original_graph = network.Graph(edges)
 
