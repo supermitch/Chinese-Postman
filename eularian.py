@@ -24,7 +24,7 @@ def fleury_walk(graph, start=None, circuit=False):
     If circuit is True, route must start & end at the same node.
 
     """
-    visited = []  # Edges
+    visited = set()  # Edges
 
     # Begin at a random node unless start is specified
     node = start if start else random.choice(graph.node_keys)
@@ -45,8 +45,7 @@ def fleury_walk(graph, start=None, circuit=False):
             break  # Reached a dead-end, no path options
         next_node = reduced_graph.edges[chosen_path].end(node)  # Other end
 
-        visited.append(chosen_path)  # Never revisit this edge
-        print(sorted(visited))
+        visited.add(chosen_path)  # Never revisit this edge
 
         route.append(next_node)
         node = next_node
