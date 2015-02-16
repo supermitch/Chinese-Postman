@@ -29,25 +29,26 @@ def fleury_walk(graph, start=None, circuit=False):
     # Begin at a random node unless start is specified
     node = start if start else random.choice(graph.node_keys)
 
-    route = []
+    route = [node]
     while len(visited) < len(graph):
         # Fleury's algorithm tells us to preferentially select non-bridges
         reduced_graph = copy.deepcopy(graph)
         reduced_graph.remove_edges(visited)
         options = reduced_graph.edge_options(node)
-        bridges = [x for x in options if reduced_graph.is_bridge(x)]
-        non_bridges = [x for x in options if x not in bridges]
+        bridges = [k for k in options.keys() if reduced_graph.is_bridge(k)]
+        non_bridges = [k for k in options.keys() if k not in bridges]
         if non_bridges:
             chosen_path = random.choice(non_bridges)
         elif bridges:
             chosen_path = random.choice(bridges)
         else:
             break  # Reached a dead-end, no path options
-        next_node = chosen_path.end(node)  # Other end
+        next_node = reduced_graph.edges[chosen_path].end(node)  # Other end
 
         visited.append(chosen_path)  # Never revisit this edge
+        print(sorted(visited))
 
-        route.append((node, next_node))
+        route.append(next_node)
         node = next_node
 
     return route
@@ -63,7 +64,7 @@ def eularian_path(graph, start=None, circuit=False):
     """
     for i in range(1, 1001):
         route = fleury_walk(graph, start, circuit)
-        if len(route) == len(graph):  # We visited every edge
+        if len(route) == len(graph) + 1:  # We visited every edge
             return route, i
     return [], i  # Never found a solution
 

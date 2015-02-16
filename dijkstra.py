@@ -38,7 +38,7 @@ def find_cost(path, graph):
 
     node = start
     while unvisited:  # While we still have unvisited nodes
-        for option in graph.edge_options(node):
+        for option in graph.edge_options(node).values():
             next_node = option.end(node)
             if next_node not in unvisited:
                 continue  # Don't go backwards

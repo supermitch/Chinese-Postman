@@ -24,16 +24,18 @@ class Graph(object):
     def remove_edges(self, edges):
         """ Removes a list of edges. """
         for edge in edges:
-            self.remove_edge(*edge.contents)
+            if isinstance(edge, int):
+                self.remove_edge(edge)
+            else:
+                self.remove_edge(*edge.contents)
 
     def remove_edge(self, *args):
         """ Remove an edge, plus node if it's disconnected. """
         if len(args) == 1 and isinstance(args[0], int):
-            del self.edges[args[0]]
+            del self.edges[args[0]]  # Remove by key
         else:
             match = self.find_edge(*args)  # Returns all matches
             del self.edges[list(match.keys())[0]]  # Delete first match only
-
 
     @property
     def nodes(self):
@@ -111,8 +113,9 @@ class Graph(object):
         return dict((matches.popitem(),))  # One result only
 
     def edge_options(self, node):
-        """ Return available edges for a given node. """
-        return [x for x in self.edges.values() if node in (x.head, x.tail)]
+        """ Return dictionary of available edges for a given node. """
+        return {k: v for k, v in self.edges.items() \
+                if node in (v.head, v.tail)}
 
     def edge_cost(self, *args):
         """ Search for this edge. """
@@ -124,7 +127,7 @@ class Graph(object):
         """ Return the total cost of this graph. """
         return sum(x.weight for x in self.edges.values() if x.weight)
 
-    def is_bridge(self, edge):
+    def is_bridge(self, key):
         """
         Return True if an edge is a bridge.
 
@@ -134,10 +137,10 @@ class Graph(object):
 
         """
         graph = copy.deepcopy(self)
-        match = graph.find_edge(*edge.contents)
-        graph.remove_edge(list(match.keys())[0])  # Don't include the given edge
 
-        start = list(match.values())[0].tail  # Could start at either end.
+        start = graph.edges[key].tail  # Could start at either end.
+
+        graph.remove_edge(key)  # Don't include the given edge
 
         stack = []
         visited = set()  # Visited nodes
