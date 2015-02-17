@@ -74,6 +74,12 @@ def build_path_sets(graph):
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     no_of_pairs = len(odd_nodes) / 2
 
+    sets_2 = list(itertools.combinations(combos, no_of_pairs))
+    #print(sets_2)
+    sets_unique = [x for x in sets_2 if my_iter.all_unique(my_iter.flatten_tuples(x))]
+    #print(sets_unique)
+    return sets_unique
+
     set_no = 0
     sets = []
     while set_no < len(combos) / no_of_pairs:
@@ -90,6 +96,7 @@ def build_path_sets(graph):
                 break
         sets.append(pairs)
         set_no += 1
+    print(sets)
     return sets
 
 def find_set_cost(path_set, graph):
@@ -123,9 +130,13 @@ def add_new_edges(graph, min_route):
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
+    print('\tBuilding path sets...')
     path_sets = build_path_sets(graph)  # Get all possible added path sets
+    print('\tFinding set solutions...')
     set_routes, set_costs = find_set_solutions(path_sets, graph)
+    print('\tFinding cheapest solution...')
     min_route, min_cost = find_minimum_path_set(path_sets, set_routes, set_costs)
+    print('\tAdding new edges...')
     new_graph = add_new_edges(graph, min_route)  # Add our new edges
     return new_graph, min_cost
 
