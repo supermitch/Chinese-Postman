@@ -85,7 +85,7 @@ def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
     odd_nodes = graph.odd_nodes
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
-    no_of_pairs = len(odd_nodes) / 2
+    no_of_pairs = int(len(odd_nodes) / 2)
 
     return [x for x in itertools.combinations(combos, no_of_pairs) if my_iter.all_unique(my_iter.flatten_tuples(x))]
 
@@ -141,7 +141,7 @@ def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
     print('\tDoubling dead_ends...')
     dead_end_edges = find_dead_ends(graph)
-    graph.add_edges(dead_end_edges)  # Double our dead-ends
+    graph.add_edges([x.contents for x in dead_end_edges])  # Double our dead-ends
     print('\tBuilding path sets...')
     path_sets = build_path_sets(graph)  # Get all possible added path sets
     print('\tFinding set solutions...')
