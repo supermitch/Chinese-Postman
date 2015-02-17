@@ -87,11 +87,7 @@ def build_path_sets(graph):
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
     no_of_pairs = len(odd_nodes) / 2
 
-    sets_2 = list(itertools.combinations(combos, no_of_pairs))
-    #print(sets_2)
-    sets_unique = [x for x in sets_2 if my_iter.all_unique(my_iter.flatten_tuples(x))]
-    #print(sets_unique)
-    return sets_unique
+    return [x for x in itertools.combinations(combos, no_of_pairs) if my_iter.all_unique(my_iter.flatten_tuples(x))]
 
     set_no = 0
     sets = []
