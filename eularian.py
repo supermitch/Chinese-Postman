@@ -85,9 +85,15 @@ def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
     odd_nodes = graph.odd_nodes
     combos = list(itertools.combinations(sorted(odd_nodes), 2))
+
     no_of_pairs = int(len(odd_nodes) / 2)
 
-    return [x for x in itertools.combinations(combos, no_of_pairs) if my_iter.all_unique(my_iter.flatten_tuples(x))]
+    sets = [x for x in itertools.combinations(combos, no_of_pairs) if my_iter.all_unique(my_iter.flatten_tuples(x))]
+    return sets
+    # Works but finding set solutions is much slower, because (A, B), (C, D)
+    # is repeated with (A, B), (D, C) ...
+    sets = [((x[i], x[i+1]) for i in range(0, len(odd_nodes), 2)) for x in itertools.permutations(odd_nodes, len(odd_nodes))]
+    return sets
 
     set_no = 0
     sets = []
