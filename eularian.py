@@ -84,35 +84,18 @@ def eularian_path(graph, start=None, circuit=False):
 def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
     odd_nodes = graph.odd_nodes
-    combos = list(itertools.combinations(sorted(odd_nodes), 2))
+    return ((x for x in itertools.permutations(odd_nodes, len(odd_nodes))),
+        len(odd_nodes))
 
-    no_of_pairs = int(len(odd_nodes) / 2)
+def arrange_into_pairs(node_sets, node_count):
+    """
+    Split the set of nodes into pairs of tuples.
 
-    sets = [x for x in itertools.combinations(combos, no_of_pairs) if my_iter.all_unique(my_iter.flatten_tuples(x))]
-    return sets
-    # Works but finding set solutions is much slower, because (A, B), (C, D)
-    # is repeated with (A, B), (D, C) ...
-    sets = [((x[i], x[i+1]) for i in range(0, len(odd_nodes), 2)) for x in itertools.permutations(odd_nodes, len(odd_nodes))]
-    return sets
+    e.g. (1, 2, 3, 4) --> [(1, 2), (3, 4)]
 
-    set_no = 0
-    sets = []
-    while set_no < len(combos) / no_of_pairs:
-        index = set_no
-        pairs = []
-        while True:
-            pairs.append(combos[index])
-            previous_nodes = my_iter.flatten_tuples(pairs)  # No repeats!
-            for i, combo in enumerate(combos[index + 1:], start=index + 1):
-                if all(x not in combo for x in previous_nodes):
-                    index = i
-                    break
-            if len(pairs) == no_of_pairs:
-                break
-        sets.append(pairs)
-        set_no += 1
-    print(sets)
-    return sets
+    """
+    return (((x[i], x[i+1]) for i in range(0, node_count, 2)) \
+        for x in node_sets)
 
 def find_set_cost(path_set, graph):
     """ Find the cost and route for each node pairs in a set of path options. """
@@ -159,7 +142,8 @@ def make_eularian(graph):
     dead_end_edges = find_dead_ends(graph)
     graph.add_edges([x.contents for x in dead_end_edges])  # Double our dead-ends
     print('\tBuilding path sets...')
-    path_sets = build_path_sets(graph)  # Get all possible added path sets
+    node_sets, set_length = build_path_sets(graph)  # Get all possible added path sets
+    path_sets = arrange_into_pairs(node_sets, set_length)
     print('\tFinding set solutions...')
     pair_solutions = find_node_pair_solutions(path_sets, graph)
     print('\tFinding cheapest solution...')
