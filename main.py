@@ -27,7 +27,7 @@ def main():
     graph_name = setup_args()
     try:
         edges = getattr(data.data, graph_name)
-    except AttributeError:
+    except (AttributeError, TypeError):
         print('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
             '\n\t'.join([x for x in dir(data.data)
             if not x.startswith('__')])))
@@ -40,9 +40,8 @@ def main():
     print('Original graph has {} edges'.format(len(original_graph)))
     if not original_graph.is_eularian:
         print('Converting to Eularian path...')
-        graph, min_cost = eularian.make_eularian(original_graph)
+        graph = eularian.make_eularian(original_graph)
         print('\tAdded {} edges'.format(len(graph) - len(original_graph)))
-        print('\tAdded cost is {}'.format(min_cost))
         print('\tTotal cost is {}'.format(graph.total_cost))
     else:
         graph = original_graph

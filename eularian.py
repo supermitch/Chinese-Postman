@@ -115,23 +115,33 @@ def build_path_sets(graph):
     return sets
 
 def find_set_cost(path_set, graph):
-    """ Find the cost and route for each path in a set of path options. """
-    return {path: dijkstra.find_cost(path, graph) for path in path_set}
+    """ Find the cost and route for each node pairs in a set of path options. """
+    return {pair: dijkstra.find_cost(pair, graph) for pair in pair_set}
 
-def find_set_solutions(path_sets, graph):
-    """ Return path and cost for all paths in the path sets. """
-    set_solutions = [find_set_cost(path_set, graph) for path_set in path_sets]
-    set_costs = [sum(v[0] for v in paths.values()) for paths in set_solutions]
-    set_routes = [list(v[1] for v in paths.values()) \
-                  for paths in set_solutions]
-    return set_routes, set_costs
+def find_node_pair_solutions(path_sets, graph):
+    """ Return path and cost for all node pairs in the path sets. """
+    node_pair_solutions = {}
+    for path_set in path_sets:
+        for node_pair in path_set:
+            if node_pair not in node_pair_solutions:
+                cost, path = dijkstra.find_cost(node_pair, graph)
+                node_pair_solutions[node_pair] = (cost, path)
+            else:
+                continue
+    return node_pair_solutions
 
-def find_minimum_path_set(path_sets, set_routes, set_costs):
-    """ Find the cheapest of all the path set solutions. """
-    min_cost = min(set_costs)
-    min_set = path_sets[set_costs.index(min_cost)]
-    min_route = set_routes[set_costs.index(min_cost)]
-    return min_route, min_cost
+def find_minimum_path_set(pair_sets, pair_solutions):
+    """ Return cheapest cost & route for all sets of node pairs. """
+    cheapest_set = None
+    min_cost = float('inf')
+    for pair_set in pair_sets:
+        set_cost = sum(pair_solutions[pair][0] for pair in pair_set)
+        if set_cost < min_cost:
+            cheapest_set = pair_set
+            min_cost = set_cost
+            min_route = [pair_solutions[pair][1] for pair in pair_set]
+
+    return cheapest_set, min_route
 
 def add_new_edges(graph, min_route):
     """ Return new graph w/ new edges extracted from minimum route. """
@@ -151,12 +161,14 @@ def make_eularian(graph):
     print('\tBuilding path sets...')
     path_sets = build_path_sets(graph)  # Get all possible added path sets
     print('\tFinding set solutions...')
-    set_routes, set_costs = find_set_solutions(path_sets, graph)
+    pair_solutions = find_node_pair_solutions(path_sets, graph)
     print('\tFinding cheapest solution...')
-    min_route, min_cost = find_minimum_path_set(path_sets, set_routes, set_costs)
+    cheapest_set, min_route = find_minimum_path_set(path_sets, pair_solutions)
     print('\tAdding new edges...')
+    print(cheapest_set)
+    print(min_route)
     final_graph = add_new_edges(graph, min_route)  # Add our new edges
-    return final_graph, min_cost
+    return final_graph
 
 
 if __name__ == '__main__':
