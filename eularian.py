@@ -109,6 +109,10 @@ def find_node_pair_solutions(path_sets, graph):
             if node_pair not in node_pair_solutions:
                 cost, path = dijkstra.find_cost(node_pair, graph)
                 node_pair_solutions[node_pair] = (cost, path)
+            elif node_pair[::-1] in node_pair_solutions:
+                cost, path = node_pair_solutions[node_pair[::-1]]
+                # This only works for undirected graphs
+                node_pair_solutions[node_pair] = cost, path[::-1]
             else:
                 continue
     return node_pair_solutions
