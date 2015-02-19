@@ -13,19 +13,6 @@ import dijkstra
 import my_math
 import my_iter
 
-def find_dead_ends(graph):
-    """
-    Return a list of dead-ended edges.
-
-    Find paths that are dead-ends. We know we have to double them, since
-    they are all order 1, so we'll do this ahead of time to alleviate
-    odd pair set finding.
-
-    """
-    single_nodes = [k for k, order in graph.node_orders.items() if order == 1]
-    return [x for k in single_nodes for x in graph.edges.values() \
-            if k in (x.head, x.tail)]
-
 def fleury_walk(graph, start=None, circuit=False):
     """
     Return an attempt at walking the edges of a graph.
@@ -81,11 +68,23 @@ def eularian_path(graph, start=None, circuit=False):
     return [], i  # Never found a solution
 
 
+def find_dead_ends(graph):
+    """
+    Return a list of dead-ended edges.
+
+    Find paths that are dead-ends. We know we have to double them, since
+    they are all order 1, so we'll do this ahead of time to alleviate
+    odd pair set finding.
+
+    """
+    single_nodes = [k for k, order in graph.node_orders.items() if order == 1]
+    return [x for k in single_nodes for x in graph.edges.values() \
+            if k in (x.head, x.tail)]
+
 def build_path_sets(graph):
     """ Builds all possible sets of odd node pairs. """
     odd_nodes = graph.odd_nodes
-    return ((x for x in itertools.permutations(odd_nodes, len(odd_nodes))),
-        len(odd_nodes))
+    return (x for x in itertools.permutations(odd_nodes, len(odd_nodes)))
 
 def arrange_into_pairs(node_sets, node_count):
     """
@@ -109,12 +108,8 @@ def find_node_pair_solutions(path_sets, graph):
             if node_pair not in node_pair_solutions:
                 cost, path = dijkstra.find_cost(node_pair, graph)
                 node_pair_solutions[node_pair] = (cost, path)
-            elif node_pair[::-1] in node_pair_solutions:
-                cost, path = node_pair_solutions[node_pair[::-1]]
-                # This only works for undirected graphs
-                node_pair_solutions[node_pair] = cost, path[::-1]
-            else:
-                continue
+                # Also store the reverse pair
+                node_pair_solutions[node_pair[::-1]] = (cost, path[::-1])
     return node_pair_solutions
 
 def find_minimum_path_set(pair_sets, pair_solutions):
@@ -142,15 +137,19 @@ def add_new_edges(graph, min_route):
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
-    print('\tDoubling dead_ends...')
+    print('\tDoubling dead_ends')
     dead_end_edges = find_dead_ends(graph)
+    print('\t\tFound {} dead ends'.format(len(dead_end_edges)))
     graph.add_edges([x.contents for x in dead_end_edges])  # Double our dead-ends
-    print('\tBuilding path sets...')
-    node_sets, set_length = build_path_sets(graph)  # Get all possible added path sets
-    path_sets = arrange_into_pairs(node_sets, set_length)
-    print('\tFinding set solutions...')
+
+    print('\tBuilding path sets')
+    node_sets = build_path_sets(graph)  # Get all possible added path sets
+    path_sets = arrange_into_pairs(node_sets, len(graph.odd_nodes))
+
+    print('\tFinding set solutions')
     pair_solutions = find_node_pair_solutions(path_sets, graph)
-    print('\tFinding cheapest solution...')
+
+    print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(path_sets, pair_solutions)
     print('\tAdding new edges...')
     print(cheapest_set)
