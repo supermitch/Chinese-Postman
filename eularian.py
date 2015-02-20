@@ -5,7 +5,6 @@ This module contains functions relating to the identification
 and solution of Eularian trails and Circuits.
 
 """
-import collections
 import copy
 import itertools
 import random
@@ -85,30 +84,16 @@ def find_dead_ends(graph):
 def build_node_pairs(graph):
     """ Builds all possible odd node pairs. """
     odd_nodes = graph.odd_nodes
-    return (x for x in itertools.combinations(odd_nodes, 2))
+    return [x for x in itertools.combinations(odd_nodes, 2)]
 
 def build_path_sets(node_pairs, set_size):
     """ Builds all possible sets of odd node pairs. """
     return (x for x in itertools.combinations(node_pairs, set_size) \
-            if all_unique(flatten_tuples(x)))
-
-def arrange_into_pairs(node_sets, node_count):
-    """
-    Split the set of nodes into pairs of tuples.
-
-    e.g. (1, 2, 3, 4) --> [(1, 2), (3, 4)]
-
-    """
-    return (((x[i], x[i+1]) for i in range(0, node_count, 2)) \
-        for x in node_sets)
-
-def find_set_cost(path_set, graph):
-    """ Find the cost and route for each node pairs in a set of path options. """
-    return {pair: dijkstra.find_cost(pair, graph) for pair in pair_set}
+            if all_unique(sum(x, ())))
 
 def find_node_pair_solutions(node_pairs, graph):
     """ Return path and cost for all node pairs in the path sets. """
-    node_pair_solutions = collections.OrderedDict()
+    node_pair_solutions = {}
     for node_pair in node_pairs:
         if node_pair not in node_pair_solutions:
             cost, path = dijkstra.find_cost(node_pair, graph)
@@ -117,10 +102,32 @@ def find_node_pair_solutions(node_pairs, graph):
             node_pair_solutions[node_pair[::-1]] = (cost, path[::-1])
     return node_pair_solutions
 
+def build_min_set(node_solutions):
+    """ Order pairs by cheapest first and build a set by pulling
+    pairs until every node is covered. """
+    # Doesn't actually work... bad algorithm. What if last node
+    # has insane path cost?
+    odd_nodes = set([x for pair in node_solutions.keys() for x in pair])
+    # Sort by node_pair cost
+    sorted_solutions = sorted(node_solutions.items(), key=lambda x:x[1][0])
+    path_set = []
+    for node_pair, solution in sorted_solutions:
+        if not all(x in odd_nodes for x in node_pair):
+            continue
+        path_set.append((node_pair, solution))
+        for node in node_pair:
+            odd_nodes.remove(node)
+        if not odd_nodes:  # We've got a pair for every node
+            break
+    print(path_set)
+    return path_set
+
+
 def find_minimum_path_set(pair_sets, pair_solutions):
     """ Return cheapest cost & route for all sets of node pairs. """
     cheapest_set = None
     min_cost = float('inf')
+    min_route = []
     for pair_set in pair_sets:
         set_cost = sum(pair_solutions[pair][0] for pair in pair_set)
         if set_cost < min_cost:
@@ -149,10 +156,17 @@ def make_eularian(graph):
 
     print('\tBuilding odd node pairs')
     node_pairs = build_node_pairs(graph)
+    print('\t\t{} possible pairs'.format(len(node_pairs)))
 
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
+    sorted_solutions = sorted(pair_solutions.items(), key=lambda x:x[1][0])
+    print(sorted_solutions)
 
+    print('\tBuilding minimum set solution')
+    min_set = build_min_set(pair_solutions)
+
+    return None  # Broken
     print('\tBuilding path sets')
     set_size = int(len(graph.odd_nodes)/2)
     pair_sets = build_path_sets(node_pairs, set_size)
