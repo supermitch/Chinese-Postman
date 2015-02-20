@@ -5,13 +5,14 @@ This module contains functions relating to the identification
 and solution of Eularian trails and Circuits.
 
 """
+import collections
 import copy
 import itertools
 import random
 
 import dijkstra
 import my_math
-import my_iter
+from my_iter import all_unique, flatten_tuples
 
 def fleury_walk(graph, start=None, circuit=False):
     """
@@ -81,10 +82,15 @@ def find_dead_ends(graph):
     return [x for k in single_nodes for x in graph.edges.values() \
             if k in (x.head, x.tail)]
 
-def build_path_sets(graph):
-    """ Builds all possible sets of odd node pairs. """
+def build_node_pairs(graph):
+    """ Builds all possible odd node pairs. """
     odd_nodes = graph.odd_nodes
-    return (x for x in itertools.permutations(odd_nodes, len(odd_nodes)))
+    return (x for x in itertools.combinations(odd_nodes, 2))
+
+def build_path_sets(node_pairs, set_size):
+    """ Builds all possible sets of odd node pairs. """
+    return (x for x in itertools.combinations(node_pairs, set_size) \
+            if all_unique(flatten_tuples(x)))
 
 def arrange_into_pairs(node_sets, node_count):
     """
@@ -100,16 +106,15 @@ def find_set_cost(path_set, graph):
     """ Find the cost and route for each node pairs in a set of path options. """
     return {pair: dijkstra.find_cost(pair, graph) for pair in pair_set}
 
-def find_node_pair_solutions(path_sets, graph):
+def find_node_pair_solutions(node_pairs, graph):
     """ Return path and cost for all node pairs in the path sets. """
-    node_pair_solutions = {}
-    for path_set in path_sets:
-        for node_pair in path_set:
-            if node_pair not in node_pair_solutions:
-                cost, path = dijkstra.find_cost(node_pair, graph)
-                node_pair_solutions[node_pair] = (cost, path)
-                # Also store the reverse pair
-                node_pair_solutions[node_pair[::-1]] = (cost, path[::-1])
+    node_pair_solutions = collections.OrderedDict()
+    for node_pair in node_pairs:
+        if node_pair not in node_pair_solutions:
+            cost, path = dijkstra.find_cost(node_pair, graph)
+            node_pair_solutions[node_pair] = (cost, path)
+            # Also store the reverse pair
+            node_pair_solutions[node_pair[::-1]] = (cost, path[::-1])
     return node_pair_solutions
 
 def find_minimum_path_set(pair_sets, pair_solutions):
@@ -142,15 +147,19 @@ def make_eularian(graph):
     print('\t\tFound {} dead ends'.format(len(dead_end_edges)))
     graph.add_edges([x.contents for x in dead_end_edges])  # Double our dead-ends
 
-    print('\tBuilding path sets')
-    node_sets = build_path_sets(graph)  # Get all possible added path sets
-    path_sets = arrange_into_pairs(node_sets, len(graph.odd_nodes))
+    print('\tBuilding odd node pairs')
+    node_pairs = build_node_pairs(graph)
 
-    print('\tFinding set solutions')
-    pair_solutions = find_node_pair_solutions(path_sets, graph)
+    print('\tFinding pair solutions')
+    pair_solutions = find_node_pair_solutions(node_pairs, graph)
+
+    print('\tBuilding path sets')
+    set_size = int(len(graph.odd_nodes)/2)
+    pair_sets = build_path_sets(node_pairs, set_size)
+    print(list(pair_sets))
 
     print('\tFinding cheapest route')
-    cheapest_set, min_route = find_minimum_path_set(path_sets, pair_solutions)
+    cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
     print('\tAdding new edges...')
     print(cheapest_set)
     print(min_route)
