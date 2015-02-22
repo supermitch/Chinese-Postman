@@ -8,6 +8,7 @@ and solution of Eularian trails and Circuits.
 import copy
 import itertools
 import random
+import sys
 
 import dijkstra
 import my_math
@@ -91,6 +92,33 @@ def build_path_sets(node_pairs, set_size):
     return (x for x in itertools.combinations(node_pairs, set_size) \
             if all_unique(sum(x, ())))
 
+def build_path_sets_manual(node_pairs, no_of_pairs):
+    """ Build our path sets manually. """
+    print('NODE PAIRS:')
+    print(node_pairs)
+    set_no = 0
+    sets = []
+    while set_no < len(node_pairs) / no_of_pairs:
+        index = set_no
+        pairs = []
+        while True:
+            pairs.append(node_pairs[index])
+            previous_nodes = flatten_tuples(pairs)  # No repeats!
+            for i, pair in enumerate(node_pairs[index + 1:], start=index + 1):
+                if all(x not in pair for x in previous_nodes):
+                    index = i
+                    break
+            if len(pairs) == no_of_pairs:
+                break
+        sets.append(pairs)
+        set_no += 1
+
+    print('\nPATH SETS:')
+    for _set in sets:
+        print(_set)
+    return sets
+
+
 def find_node_pair_solutions(node_pairs, graph):
     """ Return path and cost for all node pairs in the path sets. """
     node_pair_solutions = {}
@@ -161,14 +189,12 @@ def make_eularian(graph):
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
     sorted_solutions = sorted(pair_solutions.items(), key=lambda x:x[1][0])
-    print(sorted_solutions)
 
-    print('\tBuilding minimum set solution')
-    min_set = build_min_set(pair_solutions)
-
-    return None  # Broken
     print('\tBuilding path sets')
     set_size = int(len(graph.odd_nodes)/2)
+    pair_sets = build_path_sets_manual(node_pairs, set_size)
+    sys.exit('Goodbye')
+
     pair_sets = build_path_sets(node_pairs, set_size)
     print(list(pair_sets))
 
