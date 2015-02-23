@@ -96,23 +96,15 @@ def build_path_sets_manual(node_pairs, no_of_pairs):
     """ Build our path sets manually. """
     print('NODE PAIRS:')
     print(node_pairs)
-    set_no = 0
-    sets = []
-    while set_no < len(node_pairs) / no_of_pairs:
-        index = set_no
-        pairs = []
-        while True:
-            pairs.append(node_pairs[index])
-            previous_nodes = flatten_tuples(pairs)  # No repeats!
-            for i, pair in enumerate(node_pairs[index + 1:], start=index + 1):
-                if all(x not in pair for x in previous_nodes):
-                    index = i
-                    break
-            if len(pairs) == no_of_pairs:
-                break
-        sets.append(pairs)
-        set_no += 1
 
+    sets = []
+    path_set = []
+    seen = set()
+    for pair in node_pairs:
+        if not any(x in seen for x in pair):
+            path_set.append(pair)
+            seen.update(pair)
+    sets.append(path_set)
     print('\nPATH SETS:')
     for _set in sets:
         print(_set)
