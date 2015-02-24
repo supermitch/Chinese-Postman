@@ -9,6 +9,7 @@ import copy
 import itertools
 import random
 import sys
+from time import clock
 
 import dijkstra
 import my_math
@@ -184,13 +185,22 @@ def make_eularian(graph):
     graph.add_edges([x.contents for x in dead_end_edges])  # Double our dead-ends
 
     print('\tBuilding odd node pairs')
-    node_pairs = build_node_pairs(graph)
+    node_pairs = list(build_node_pairs(graph))
 
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
+    print(len(list(pair_solutions)))
 
     print('\tBuilding path sets')
+    tic = clock()
     pair_sets = (x for x in unique_pairs(graph.odd_nodes))
+    print(len(list(pair_sets)))
+    print('elapsed: {}'.format(clock()-tic))
+
+    tic = clock()
+    pair_sets = build_path_sets(node_pairs, int(len(graph.odd_nodes)/2))
+    print(len(list(pair_sets)))
+    print('elapsed: {}'.format(clock()-tic))
 
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
