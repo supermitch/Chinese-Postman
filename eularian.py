@@ -92,6 +92,15 @@ def build_path_sets(node_pairs, set_size):
     return (x for x in itertools.combinations(node_pairs, set_size) \
             if all_unique(sum(x, ())))
 
+def unique_pairs(items):
+    for item in items[1:]:
+        pair = items[0], item
+        leftovers = [a for a in items if a not in pair]
+        if leftovers:
+            yield from ([pair] + tail for tail in unique_pairs(leftovers))
+        else:
+            yield [pair]
+
 def build_path_sets_manual(node_pairs, no_of_pairs):
     """ Build our path sets manually. """
     print('NODE PAIRS:')
@@ -182,13 +191,16 @@ def make_eularian(graph):
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
     sorted_solutions = sorted(pair_solutions.items(), key=lambda x:x[1][0])
 
-    print('\tBuilding path sets')
-    set_size = int(len(graph.odd_nodes)/2)
-    pair_sets = build_path_sets_manual(node_pairs, set_size)
-    sys.exit('Goodbye')
 
-    pair_sets = build_path_sets(node_pairs, set_size)
-    print(list(pair_sets))
+    print('\tBuilding path sets')
+    #set_size = int(len(graph.odd_nodes)/2)
+    pair_sets = [x for x in unique_pairs(graph.odd_nodes)]
+    #pair_sets = build_path_sets(node_pairs, set_size)
+    #print(list(pair_sets))
+    #sys.exit('Goodbye')
+
+    #pair_sets = build_path_sets(node_pairs, set_size)
+    #print(list(pair_sets))
 
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
