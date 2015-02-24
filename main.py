@@ -26,6 +26,7 @@ def main():
     edges = None
     graph_name = setup_args()
     try:
+        print('Loading graph: {}'.format(graph_name))
         edges = getattr(data.data, graph_name)
     except (AttributeError, TypeError):
         print('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
@@ -35,9 +36,7 @@ def main():
 
     original_graph = network.Graph(edges)
 
-    print('Original:\n')
-    print(original_graph)
-    print('Original graph has {} edges'.format(len(original_graph)))
+    print('{} edges'.format(len(original_graph)))
     if not original_graph.is_eularian:
         print('Converting to Eularian path...')
         graph = eularian.make_eularian(original_graph)
@@ -45,8 +44,7 @@ def main():
         print('\tTotal cost is {}'.format(graph.total_cost))
     else:
         graph = original_graph
-    print('\nEularian:')
-    print(graph)
+
     print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start=1)
     if not route:

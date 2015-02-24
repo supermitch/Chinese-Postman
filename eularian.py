@@ -185,22 +185,12 @@ def make_eularian(graph):
 
     print('\tBuilding odd node pairs')
     node_pairs = build_node_pairs(graph)
-    print('\t\t{} possible pairs'.format(len(node_pairs)))
 
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
-    sorted_solutions = sorted(pair_solutions.items(), key=lambda x:x[1][0])
-
 
     print('\tBuilding path sets')
-    #set_size = int(len(graph.odd_nodes)/2)
-    pair_sets = [x for x in unique_pairs(graph.odd_nodes)]
-    #pair_sets = build_path_sets(node_pairs, set_size)
-    #print(list(pair_sets))
-    #sys.exit('Goodbye')
-
-    #pair_sets = build_path_sets(node_pairs, set_size)
-    #print(list(pair_sets))
+    pair_sets = (x for x in unique_pairs(graph.odd_nodes))
 
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
