@@ -40,6 +40,7 @@ def main():
     if not original_graph.is_eularian:
         print('Converting to Eularian path...')
         graph = eularian.make_eularian(original_graph)
+        print('Conversion complete')
         print('\tAdded {} edges'.format(len(graph) - len(original_graph)))
         print('\tTotal cost is {}'.format(graph.total_cost))
     else:
@@ -50,8 +51,9 @@ def main():
     if not route:
         print('\tGave up after {} attempts.'.format(attempts))
     else:
-        print('\tSolved in {} attempts:\n{}'.format(attempts, route))
-        print('\t({} edges)'.format(len(route) - 1))
+        print('\tSolved in {} attempts'.format(attempts, route))
+        print('Solution: ({} edges)'.format(len(route) - 1))
+        print('\t{}'.format(route))
 
 if __name__ == '__main__':
     main()
