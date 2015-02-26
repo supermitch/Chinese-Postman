@@ -164,14 +164,17 @@ def make_eularian(graph):
     print('\tDoubling dead_ends')
     graph.add_edges([x.contents for x in find_dead_ends(graph)])  # Double our dead-ends
 
-    print('\tBuilding odd node pairs')
+    print('\tBuilding possible odd node pairs')
     node_pairs = list(build_node_pairs(graph))
+    print('\t\t({} pairs)'.format(len(node_pairs)))
 
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
+    print('\t\t({} solutions)'.format(len(pair_solutions)))
 
     print('\tBuilding path sets')
-    pair_sets = (x for x in unique_pairs(graph.odd_nodes))
+    pair_sets = [x for x in unique_pairs(graph.odd_nodes)]
+    print('\t\t({} pair sets)'.format(len(pair_sets)))
 
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
