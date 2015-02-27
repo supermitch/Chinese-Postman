@@ -173,8 +173,7 @@ def make_eularian(graph):
     print('\t\t({} solutions)'.format(len(pair_solutions)))
 
     print('\tBuilding path sets')
-    pair_sets = [x for x in unique_pairs(graph.odd_nodes)]
-    print('\t\t({} pair sets)'.format(len(pair_sets)))
+    pair_sets = (x for x in unique_pairs(graph.odd_nodes))
 
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
