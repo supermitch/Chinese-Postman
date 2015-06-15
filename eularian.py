@@ -83,6 +83,7 @@ def find_dead_ends(graph):
     return [x for k in single_nodes for x in graph.edges.values() \
             if k in (x.head, x.tail)]
 
+
 def build_node_pairs(graph):
     """ Builds all possible odd node pairs. """
     odd_nodes = graph.odd_nodes
@@ -99,7 +100,11 @@ def unique_pairs(items):
         pair = items[0], item
         leftovers = [a for a in items if a not in pair]
         if leftovers:
-            yield from ([pair] + tail for tail in unique_pairs(leftovers))
+            # Python 2.7 version? Are they equivalent??
+            for tail in unique_pairs(leftovers):
+                yield [pair] + tail
+            # Python 3 version:
+            # yield from ([pair] + tail for tail in unique_pairs(leftovers))
         else:
             yield [pair]
 
