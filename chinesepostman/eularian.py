@@ -11,9 +11,8 @@ import random
 import sys
 from time import clock
 
-import dijkstra
-import my_math
-from my_iter import all_unique, flatten_tuples
+from . import dijkstra, my_math
+from .my_iter import all_unique, flatten_tuples
 
 def fleury_walk(graph, start=None, circuit=False):
     """

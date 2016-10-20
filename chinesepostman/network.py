@@ -1,5 +1,5 @@
 import copy
-import my_math
+from . import my_math
 
 class Graph(object):
     """ Abstract representation of a graph. """

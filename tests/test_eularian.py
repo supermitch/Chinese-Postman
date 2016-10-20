@@ -1,7 +1,7 @@
 import unittest
 
 import eularian
-from network import Graph
+from chinesepostman.network import Graph
 
 class TestEularian(unittest.TestCase):
 

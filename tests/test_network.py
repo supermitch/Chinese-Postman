@@ -1,6 +1,6 @@
 import unittest
 
-from network import Graph, Edge
+from chinesepostman.network import Graph, Edge
 
 class TestGraph(unittest.TestCase):
 

@@ -1,7 +1,7 @@
 import unittest
 
 import dijkstra as di
-import network
+from chinesepostman import network
 
 class TestDijkstra(unittest.TestCase):
 
