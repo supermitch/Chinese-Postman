@@ -10,8 +10,7 @@ import argparse
 import sys
 
 import data.data
-import eularian
-import network
+from chinesepostman import eularian, network
 
 def setup_args():
     """ Setup argparse to take graph name argument. """
