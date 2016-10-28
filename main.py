@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Solve the Chinese-Postman problem.
 
@@ -21,7 +21,6 @@ def setup_args():
 
 def main():
     """ Make it so. """
-
     edges = None
     graph_name = setup_args()
     try:
@@ -56,4 +55,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
