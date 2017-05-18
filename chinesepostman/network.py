@@ -40,7 +40,7 @@ class Graph(object):
     @property
     def nodes(self):
         """ Return a set of all node indices in this graph. """
-        return set([node for edge in self.edges.values() \
+        return set([node for edge in list(self.edges.values()) \
                     for node in (edge.head, edge.tail)])
     @property
     def node_keys(self):
@@ -62,7 +62,7 @@ class Graph(object):
         """ Returns an ascending list of (node, cost) tuples connected
         to this node. """
         options = []
-        for edge in self.edges.values():
+        for edge in list(self.edges.values()):
             if edge.head == node:
                 options.append(edge.tail)
             elif edge.tail == node:
@@ -91,7 +91,7 @@ class Graph(object):
         Of the given parameters, `cost` and `directed` are optional.
         """
         results = {}
-        for key, edge in self.edges.items():
+        for key, edge in list(self.edges.items()):
             if not cost and not directed:
                 if (head, tail) == (edge.head, edge.tail) or \
                    (tail, head) == (edge.head, edge.tail):
@@ -114,18 +114,18 @@ class Graph(object):
 
     def edge_options(self, node):
         """ Return dictionary of available edges for a given node. """
-        return {k: v for k, v in self.edges.items() \
+        return {k: v for k, v in list(self.edges.items()) \
                 if node in (v.head, v.tail)}
 
     def edge_cost(self, *args):
         """ Search for this edge. """
-        weight = min([edge.weight for edge in self.find_edges(*args).values() if edge.weight])
+        weight = min([edge.weight for edge in list(self.find_edges(*args).values()) if edge.weight])
         return weight
 
     @property
     def total_cost(self):
         """ Return the total cost of this graph. """
-        return sum(x.weight for x in self.edges.values() if x.weight)
+        return sum(x.weight for x in list(self.edges.values()) if x.weight)
 
     def is_bridge(self, key):
         """
