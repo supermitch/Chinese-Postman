@@ -24,34 +24,34 @@ def main():
     edges = None
     graph_name = setup_args()
     try:
-        print('Loading graph: {}'.format(graph_name))
+        print(('Loading graph: {}'.format(graph_name)))
         edges = getattr(data.data, graph_name)
     except (AttributeError, TypeError):
-        print('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
+        print(('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
             '\n\t'.join([x for x in dir(data.data)
-            if not x.startswith('__')])))
+            if not x.startswith('__')]))))
         sys.exit()
 
     original_graph = network.Graph(edges)
 
-    print('{} edges'.format(len(original_graph)))
+    print(('{} edges'.format(len(original_graph))))
     if not original_graph.is_eularian:
         print('Converting to Eularian path...')
         graph = eularian.make_eularian(original_graph)
         print('Conversion complete')
-        print('\tAdded {} edges'.format(len(graph) - len(original_graph)))
-        print('\tTotal cost is {}'.format(graph.total_cost))
+        print(('\tAdded {} edges'.format(len(graph) - len(original_graph))))
+        print(('\tTotal cost is {}'.format(graph.total_cost)))
     else:
         graph = original_graph
 
     print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start=1)
     if not route:
-        print('\tGave up after {} attempts.'.format(attempts))
+        print(('\tGave up after {} attempts.'.format(attempts)))
     else:
-        print('\tSolved in {} attempts'.format(attempts, route))
-        print('Solution: ({} edges)'.format(len(route) - 1))
-        print('\t{}'.format(route))
+        print(('\tSolved in {} attempts'.format(attempts, route)))
+        print(('Solution: ({} edges)'.format(len(route) - 1)))
+        print(('\t{}'.format(route)))
 
 if __name__ == '__main__':
     main()

@@ -38,7 +38,7 @@ def find_cost(path, graph):
 
     node = start
     while unvisited:  # While we still have unvisited nodes
-        for option in graph.edge_options(node).values():
+        for option in list(graph.edge_options(node).values()):
             next_node = option.end(node)
             if next_node not in unvisited:
                 continue  # Don't go backwards
@@ -48,7 +48,7 @@ def find_cost(path, graph):
                 previous_nodes[next_node] = node
         unvisited.remove(node)
         # Next node must be closest unvisited node:
-        options = {k:v for k, v in node_costs.items() if k in unvisited}
+        options = {k:v for k, v in list(node_costs.items()) if k in unvisited}
         try:
             # Find key of minimum value in a dictionary
             node = min(options, key=options.get)  # Get nearest new node

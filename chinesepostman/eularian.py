@@ -36,8 +36,8 @@ def fleury_walk(graph, start=None, circuit=False):
         reduced_graph = copy.deepcopy(graph)
         reduced_graph.remove_edges(visited)
         options = reduced_graph.edge_options(node)
-        bridges = [k for k in options.keys() if reduced_graph.is_bridge(k)]
-        non_bridges = [k for k in options.keys() if k not in bridges]
+        bridges = [k for k in list(options.keys()) if reduced_graph.is_bridge(k)]
+        non_bridges = [k for k in list(options.keys()) if k not in bridges]
         if non_bridges:
             chosen_path = random.choice(non_bridges)
         elif bridges:
@@ -78,8 +78,8 @@ def find_dead_ends(graph):
     odd pair set finding.
 
     """
-    single_nodes = [k for k, order in graph.node_orders.items() if order == 1]
-    return [x for k in single_nodes for x in graph.edges.values() \
+    single_nodes = [k for k, order in list(graph.node_orders.items()) if order == 1]
+    return [x for k in single_nodes for x in list(graph.edges.values()) \
             if k in (x.head, x.tail)]
 
 
@@ -123,9 +123,9 @@ def build_min_set(node_solutions):
     pairs until every node is covered. """
     # Doesn't actually work... bad algorithm. What if last node
     # has insane path cost?
-    odd_nodes = set([x for pair in node_solutions.keys() for x in pair])
+    odd_nodes = set([x for pair in list(node_solutions.keys()) for x in pair])
     # Sort by node_pair cost
-    sorted_solutions = sorted(node_solutions.items(), key=lambda x:x[1][0])
+    sorted_solutions = sorted(list(node_solutions.items()), key=lambda x:x[1][0])
     path_set = []
     for node_pair, solution in sorted_solutions:
         if not all(x in odd_nodes for x in node_pair):
@@ -170,11 +170,11 @@ def make_eularian(graph):
 
     print('\tBuilding possible odd node pairs')
     node_pairs = list(build_node_pairs(graph))
-    print('\t\t({} pairs)'.format(len(node_pairs)))
+    print(('\t\t({} pairs)'.format(len(node_pairs))))
 
     print('\tFinding pair solutions')
     pair_solutions = find_node_pair_solutions(node_pairs, graph)
-    print('\t\t({} solutions)'.format(len(pair_solutions)))
+    print(('\t\t({} solutions)'.format(len(pair_solutions))))
 
     print('\tBuilding path sets')
     pair_sets = (x for x in unique_pairs(graph.odd_nodes))
