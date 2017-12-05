@@ -79,8 +79,12 @@ def find_dead_ends(graph):
 
     """
     single_nodes = [k for k, order in graph.node_orders.items() if order == 1]
-    return [x for k in single_nodes for x in graph.edges.values() \
-            if k in (x.head, x.tail)]
+    dead_ends = []
+    for k in single_nodes:
+        for x in graph.edges.values():
+            if k in (x.head, x.tail) and x not in dead_ends:
+                dead_ends.append(x)
+    return dead_ends
 
 
 def build_node_pairs(graph):
