@@ -4,6 +4,10 @@ Predefined graphs for testing and experimentation.
 
 """
 
+single = [  # Non-Eularian, single edge
+    (1,2,1)
+]
+
 square = [  # Eularian, simple square
     (1,2,1), (2,3,1), (3,4,1), (4,1,1)
 ]
