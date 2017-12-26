@@ -37,9 +37,9 @@ def main():
     print('{} edges'.format(len(original_graph)))
     if not original_graph.is_eularian:
         print('Converting to Eularian path...')
-        graph = eularian.make_eularian(original_graph)
+        graph, num_dead_ends = eularian.make_eularian(original_graph)
         print('Conversion complete')
-        print('\tAdded {} edges'.format(len(graph) - len(original_graph)))
+        print('\tAdded {} edges'.format(len(graph) - len(original_graph) + num_dead_ends))
         print('\tTotal cost is {}'.format(graph.total_cost))
     else:
         graph = original_graph

@@ -79,8 +79,8 @@ def find_dead_ends(graph):
 
     """
     single_nodes = [k for k, order in graph.node_orders.items() if order == 1]
-    return [x for k in single_nodes for x in graph.edges.values() \
-            if k in (x.head, x.tail)]
+    return set([x for k in single_nodes for x in graph.edges.values() \
+            if k in (x.head, x.tail)])
 
 
 def build_node_pairs(graph):
@@ -166,7 +166,8 @@ def add_new_edges(graph, min_route):
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
     print('\tDoubling dead_ends')
-    graph.add_edges([x.contents for x in find_dead_ends(graph)])  # Double our dead-ends
+    dead_ends = [x.contents for x in find_dead_ends(graph)]
+    graph.add_edges(dead_ends)  # Double our dead-ends
 
     print('\tBuilding possible odd node pairs')
     node_pairs = list(build_node_pairs(graph))
@@ -182,7 +183,7 @@ def make_eularian(graph):
     print('\tFinding cheapest route')
     cheapest_set, min_route = find_minimum_path_set(pair_sets, pair_solutions)
     print('\tAdding new edges')
-    return add_new_edges(graph, min_route)  # Add our new edges
+    return add_new_edges(graph, min_route), len(dead_ends)  # Add our new edges
 
 if __name__ == '__main__':
     import tests.run_tests
