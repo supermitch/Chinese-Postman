@@ -96,7 +96,6 @@ class TestGraph(unittest.TestCase):
     def test_is_bridge_true(self):
         #  Two triangles 1-2-3 and 4-5-6 joined by '3-4' bridge
         graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1), (5,6,1)])
-        print(graph)
         self.assertTrue(graph.is_bridge(3))  # Edge 3 aka '3-4 'is a bridge
 
     def test_is_bridge_false(self):
