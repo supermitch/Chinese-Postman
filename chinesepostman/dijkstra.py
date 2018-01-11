@@ -1,7 +1,4 @@
-"""
-Minimum Cost Path solver using Dijkstra's Algorithm.
-
-"""
+""" Minimum Cost Path solver using Dijkstra's Algorithm. """
 
 def summarize_path(end, previous_nodes):
     """
@@ -9,7 +6,6 @@ def summarize_path(end, previous_nodes):
 
     Chain is a dictionary linked list, e.g. {1: None, 2:1, 3:None, 4:2}
     returns [1, 2, 4] for end = 4.
-
     """
     route = []
     prev = end
@@ -18,12 +14,12 @@ def summarize_path(end, previous_nodes):
         prev = previous_nodes[prev]
     return route
 
+
 def find_cost(path, graph):
     """
     Return minimum cost and route from start to end nodes.
 
     Uses Dijkstra's algorithm to find shortest path.
-
     """
     start, end = path
 
@@ -62,7 +58,7 @@ def find_cost(path, graph):
 
     return cost, shortest_path
 
+
 if __name__ == '__main__':
     import tests.run_tests
     tests.run_tests.run(['dijkstra'])
-

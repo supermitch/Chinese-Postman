@@ -14,6 +14,7 @@ from time import clock
 from . import dijkstra, my_math
 from .my_iter import all_unique, flatten_tuples
 
+
 def fleury_walk(graph, start=None, circuit=False):
     """
     Return an attempt at walking the edges of a graph.
@@ -23,7 +24,6 @@ def fleury_walk(graph, start=None, circuit=False):
     edges.
 
     If circuit is True, route must start & end at the same node.
-
     """
     visited = set()  # Edges
 
@@ -53,6 +53,7 @@ def fleury_walk(graph, start=None, circuit=False):
 
     return route
 
+
 def eularian_path(graph, start=None, circuit=False):
     """
     Return an Eularian Trail or Eularian Circuit through a graph, if found.
@@ -60,7 +61,6 @@ def eularian_path(graph, start=None, circuit=False):
     Return the route if it visits every edge, else give up after 1000 tries.
 
     If `start` is set, force start at that Node.
-
     """
     for i in range(1, 1001):
         route = fleury_walk(graph, start, circuit)
@@ -88,10 +88,12 @@ def build_node_pairs(graph):
     odd_nodes = graph.odd_nodes
     return [x for x in itertools.combinations(odd_nodes, 2)]
 
+
 def build_path_sets(node_pairs, set_size):
     """ Builds all possible sets of odd node pairs. """
     return (x for x in itertools.combinations(node_pairs, set_size) \
             if all_unique(sum(x, ())))
+
 
 def unique_pairs(items):
     """ Generate sets of unique pairs of odd nodes. """
@@ -107,6 +109,7 @@ def unique_pairs(items):
         else:
             yield [pair]
 
+
 def find_node_pair_solutions(node_pairs, graph):
     """ Return path and cost for all node pairs in the path sets. """
     node_pair_solutions = {}
@@ -117,6 +120,7 @@ def find_node_pair_solutions(node_pairs, graph):
             # Also store the reverse pair
             node_pair_solutions[node_pair[::-1]] = (cost, path[::-1])
     return node_pair_solutions
+
 
 def build_min_set(node_solutions):
     """ Order pairs by cheapest first and build a set by pulling
@@ -153,6 +157,7 @@ def find_minimum_path_set(pair_sets, pair_solutions):
 
     return cheapest_set, min_route
 
+
 def add_new_edges(graph, min_route):
     """ Return new graph w/ new edges extracted from minimum route. """
     new_graph = copy.deepcopy(graph)
@@ -162,6 +167,7 @@ def add_new_edges(graph, min_route):
             cost = graph.edge_cost(start, end)  # Look up existing edge cost
             new_graph.add_edge(start, end, cost, False)  # Append new edges
     return new_graph
+
 
 def make_eularian(graph):
     """ Add necessary paths to the graph such that it becomes Eularian. """
@@ -185,7 +191,7 @@ def make_eularian(graph):
     print('\tAdding new edges')
     return add_new_edges(graph, min_route), len(dead_ends)  # Add our new edges
 
+
 if __name__ == '__main__':
     import tests.run_tests
     tests.run_tests.run(['eularian'])
-

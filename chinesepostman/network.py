@@ -1,5 +1,7 @@
 import copy
+
 from . import my_math
+
 
 class Graph(object):
     """ Abstract representation of a graph. """
@@ -191,14 +193,11 @@ class Edge(object):
         return hash(self.contents)
 
     def __repr__(self):
-        return 'Edge({}, {}, {}, {})'.format(self.head, self.tail,
-                                             self.weight, self.directed)
+        return 'Edge({}, {}, {}, {})'.format(self.head, self.tail, self.weight, self.directed)
 
     def __len__(self):
         """ How many attribs we have. Kinda weird... """
-        return len([x for x in \
-            (self.head, self.tail, self.weight, self.directed) \
-            if x is not None])
+        return len([x for x in (self.head, self.tail, self.weight, self.directed) if x is not None])
 
     def end(self, node):
         """ Find the opposite end of this edge, given a node. """
@@ -214,7 +213,7 @@ class Edge(object):
         """ A tuple containing edge contents. """
         return (self.head, self.tail, self.weight, self.directed)
 
+
 if __name__ == '__main__':
     import tests.run_tests
     tests.run_tests.run(['network'])
-
