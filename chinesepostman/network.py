@@ -42,8 +42,7 @@ class Graph(object):
     @property
     def nodes(self):
         """ Return a set of all node indices in this graph. """
-        return set([node for edge in self.edges.values() \
-                    for node in (edge.head, edge.tail)])
+        return set([node for edge in self.edges.values() for node in (edge.head, edge.tail)])
     @property
     def node_keys(self):
         """ Return a list of all node keys in this graph. """
@@ -57,8 +56,7 @@ class Graph(object):
     @property
     def odd_nodes(self):
         """ Return a list of odd nodes only. """
-        return [k for k in self.nodes if not \
-                my_math.is_even(self.node_orders[k])]
+        return [k for k in self.nodes if not my_math.is_even(self.node_orders[k])]
 
     def node_options(self, node):
         """ Returns an ascending list of (node, cost) tuples connected
@@ -172,14 +170,11 @@ class Graph(object):
 
 class Edge(object):
     """ A connection between nodes. """
-    def __init__(self, *args):
-        self.head = None  # Start node
-        self.tail = None  # End node
-        self.weight = 0  # Cost
-        self.directed = False  # Undirected by default
-        attrs = ('head', 'tail', 'weight', 'directed')
-        for attr, value in zip(attrs, args):
-            setattr(self, attr, value)
+    def __init__(self, head=None, tail=None, weight=0, directed=False):
+        self.head = head  # Start node
+        self.tail = tail  # End node
+        self.weight = weight  # aka Cost
+        self.directed = directed  # Undirected by default
 
     def __eq__(self, other):
         if len(other) == 3:
