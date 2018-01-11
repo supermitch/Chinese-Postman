@@ -1,7 +1,7 @@
 import unittest
 
-import my_iter
-import my_math
+from chinesepostman import my_iter, my_math
+
 
 class TestMyMath(unittest.TestCase):
 
@@ -10,6 +10,7 @@ class TestMyMath(unittest.TestCase):
 
     def test_is_even_false_correct(self):
         self.assertFalse(my_math.is_even(1))
+
 
 class TestMyIter(unittest.TestCase):
 
@@ -25,4 +26,3 @@ class TestMyIter(unittest.TestCase):
     def test_all_unique_false(self):
         data = [1, 2, 3, 3, 5, 6]
         self.assertFalse(my_iter.all_unique(data))
-

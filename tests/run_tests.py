@@ -1,15 +1,11 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import unittest
 from os import sys, path
 
+
 def run(modules=None):
-    """
-    Runs out test suite.
-
-    Accepts module name arguments for specific testing.
-
-    """
+    """ Run our tests. Accepts module name arguments for specific testing. """
     loader = unittest.TestLoader()
 
     if modules:
@@ -22,9 +18,11 @@ def run(modules=None):
     test_runner = unittest.runner.TextTestRunner(verbosity=1)
     test_runner.run(test_suite)
 
+
 if __name__ == '__main__' and __package__ is None:
     # Add root path to sys.path for module discovery.
     sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
 
 if __name__ == '__main__':
     # Accept module name arguments
@@ -32,4 +30,3 @@ if __name__ == '__main__':
         run(sys.argv[1:])
     else:
         run()
-

@@ -1,7 +1,8 @@
 import unittest
 
-import dijkstra as di
+import chinesepostman.dijkstra as di
 from chinesepostman import network
+
 
 class TestDijkstra(unittest.TestCase):
 
@@ -15,4 +16,3 @@ class TestDijkstra(unittest.TestCase):
         cost, route = di.find_cost(path, graph)
         expected = (2, [1, 2, 3])
         self.assertEqual(expected, (cost, route))
-

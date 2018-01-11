@@ -1,7 +1,8 @@
 import unittest
 
-import eularian
+from chinesepostman import eularian
 from chinesepostman.network import Graph
+
 
 class TestEularian(unittest.TestCase):
 
@@ -31,4 +32,3 @@ class TestEularian(unittest.TestCase):
         graph = Graph([(1,2,1), (1,4,1), (1,6,1), (2,3,1), (2,4,1),
                        (4,5,1), (4,6,1),])
         self.assertEqual([(2,3,1), (4,5,1)], eularian.find_dead_ends(graph))
-
