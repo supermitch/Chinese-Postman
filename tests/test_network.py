@@ -39,28 +39,28 @@ class TestGraph(unittest.TestCase):
     def test_add_edge_correct_duplicate(self):
         graph = Graph([(1,2,1)])  # One edge, two nodes
         graph.add_edge(1, 2, 1)  # Add a parallel edge
-        self.assertEqual([(1,2,1), (1,2,1)], graph.all_edges)
+        self.assertEqual([Edge(1,2,1), Edge(1,2,1)], graph.all_edges)
 
     def test_remove_edge_correct(self):
         graph = Graph(self.edges)
         graph.remove_edge(1,4,4)
-        expected = [(1,2,4), (2,4,1), (2,3,4), (3,4,4)]
+        expected = [Edge(*args) for args in [(1,2,4), (2,4,1), (2,3,4), (3,4,4)]]
         self.assertEqual(expected, graph.all_edges)
 
     def test_remove_edges_correct(self):
         graph = Graph(self.edges)
         graph.remove_edges([Edge(1,4,4), Edge(2,3,4)])
-        expected = [(1,2,4), (2,4,1), (3,4,4)]
+        expected = [Edge(*args) for args in [(1,2,4), (2,4,1), (3,4,4)]]
         self.assertEqual(expected, graph.all_edges)
 
     def test_remove_edge_duplicate_correct(self):
         graph = Graph([(1,2,1), (1,2,1), (1,2,2), (2,3,1), (3,1,1)])
         graph.remove_edge(1,2,1)
-        expected = [(1,2,1), (1,2,2), (2,3,1), (3,1,1)]
+        expected = [Edge(*args) for args in [(1,2,1), (1,2,2), (2,3,1), (3,1,1)]]
         self.assertEqual(expected, graph.all_edges)
 
     def test_edge_options(self):
-        expected = [(1,2,4), (1,4,4)]
+        expected = {0: Edge(1,2,4), 1: Edge(1,4,4)}
         self.assertEqual(expected, self.graph.edge_options(1))
 
     def test_is_eularian_true(self):
@@ -75,8 +75,7 @@ class TestGraph(unittest.TestCase):
 
     def test_is_eularian_false_non_eularian(self):
         # Diamond w/ two crossing edges: non-Eularian
-        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
-                 (1,3,2)])
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2), (1,3,2)])
         self.assertFalse(graph.is_eularian)
 
     def test_is_semi_eularian_false_eularian(self):
@@ -91,21 +90,19 @@ class TestGraph(unittest.TestCase):
 
     def test_is_semi_eularian_false_non_eularian(self):
         # Diamond w/ two crossing edges: non-Eularian
-        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2),
-                 (1,3,2)])
+        graph = Graph([(1,2,1), (2,3,1), (3,4,1), (4,1,1), (2,4,2), (1,3,2)])
         self.assertFalse(graph.is_semi_eularian)
 
     def test_is_bridge_true(self):
-        #  Two triangles joined by 'CD'
-        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1),
-                      (5,6,1)])
-        self.assertTrue(graph.is_bridge((3,4,1)))
+        #  Two triangles 1-2-3 and 4-5-6 joined by '3-4' bridge
+        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1), (5,6,1)])
+        print(graph)
+        self.assertTrue(graph.is_bridge(3))  # Edge 3 aka '3-4 'is a bridge
 
     def test_is_bridge_false(self):
-        #  Two triangles joined by 'CD'
-        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1),
-                      (5,6,1)])
-        self.assertFalse(graph.is_bridge((2,3,1)))
+        #  Two triangles 1-2-3 and 4-5-6 joined by '3-4' bridge
+        graph = Graph([(1,2,1), (1,3,1), (2,3,1), (3,4,1), (4,5,1), (4,6,1), (5,6,1)])
+        self.assertFalse(graph.is_bridge(2))  # Edge 2 aka '2-3' is not a bridge
 
 
 class TestEdge(unittest.TestCase):
@@ -122,4 +119,3 @@ class TestEdge(unittest.TestCase):
     def test_edge_instance_short(self):
         edge = Edge(1, 2)
         self.assertEqual((1, 2, 0, False), edge)
-
