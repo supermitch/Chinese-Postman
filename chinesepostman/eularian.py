@@ -139,7 +139,6 @@ def build_min_set(node_solutions):
             odd_nodes.remove(node)
         if not odd_nodes:  # We've got a pair for every node
             break
-    print(path_set)
     return path_set
 
 
