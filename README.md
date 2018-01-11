@@ -63,21 +63,26 @@ reasons). Now it takes very few attempts to solve most circuits.
 
 Later I will implement an alternative circuit finding method (Hierholzer's?)
 
-## To run
-
-    python main.py
-
-If you want to specify which graph to load, simply add the graph name:
-
-    python main.py north
-
-You can find all the graph names in the `data` folder.
+## Usage
 
 This program will run in Python 2.7 and Python 3.4, at least.
 
-There are unit tests included, in the `tests` directory. You can run these by
-typing
+Specify which graph to load by adding the graph name:
 
-    python tests/run_tests.py
+```bash
+python main.py north
+```
+
+You can find all the graph names in the `data` folder.
+
+
+## Tests
+
+There are unit tests included, in the `tests` directory.
+You can run these via
+
+```bash
+python tests/run_tests.py
+```
 
 from the root project folder.
