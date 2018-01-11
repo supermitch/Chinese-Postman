@@ -1,14 +1,11 @@
 #pylint: skip-file
-"""
-Predefined graphs for testing and experimentation.
+""" Predefined graphs for testing and experimentation. """
 
-"""
-
-single = [  # Non-Eularian, single edge
+single = [  # Non-Eularian, single edge, 1-2
     (1,2,1)
 ]
 
-square = [  # Eularian, simple square
+square = [  # Eularian, simple square, 1-2-3-4
     (1,2,1), (2,3,1), (3,4,1), (4,1,1)
 ]
 
@@ -26,7 +23,7 @@ clover = [  # Eularian, square w/ parallel edges
     (1,2,1), (1,2,2), (2,3,1), (2,3,2), (3,4,1), (3,4,2), (4,1,1), (4,1,2)
 ]
 
-# non-eularian w/ 6 odd nodes
+# Non-eularian w/ 6 odd nodes
 big_six = [
     (1,2,8), (1,5,4), (1,8,3), (2,3,9), (2,7,6), (3,4,5),
     (3,6,3), (4,5,5), (4,6,1), (5,6,2), (5,7,3), (7,8,1),
@@ -80,4 +77,3 @@ pacific_spirit = [
     (84,85, 1), (85,86, 4), (85,87, 6), (86,87, 6), (86,93,14), (87,88, 1),
     (87,89, 4), (87,90, 4), (90,91, 6), (91,92, 1), (92,93, 1)
 ]
-
