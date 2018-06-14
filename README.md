@@ -3,10 +3,8 @@
 I wrote this program to solve the
 [Chinese Postman problem](http://en.wikipedia.org/wiki/Route_inspection_problem).
 
-Described as:
-
 > The **Chinese Postman Problem**, or "route inspection problem"
-> is to find a shortest closed circuit that visits every edge of a
+> is to find a shortest closed circuit that visits _every edge_ of a
 > (connected) undirected graph.
 
 ## Inspiration
