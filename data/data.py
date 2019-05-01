@@ -1,25 +1,42 @@
 #pylint: skip-file
-""" Predefined graphs for testing and experimentation. """
+"""
+Predefined graphs for testing and experimentation.
 
-single = [  # Non-Eularian, single edge, 1-2
-    (1,2,1)
-]
+* Graphs are defined via lists containing tuples
+* Each tuple in the list represents an edge
+* Edges are defined as (start, end, length)
 
-square = [  # Eularian, simple square, 1-2-3-4
-    (1,2,1), (2,3,1), (3,4,1), (4,1,1)
-]
+For example, an equilateral triangle like:
 
-ice_cream = [  # Semi-Eularian, 2 triangles
-    (1,2,4), (1,3,3), (1,4,5), (2,3,3), (3,4,5)
-]
-sailboat = [  # Non-Eularian, 3 triangles
+   1
+  / \
+ 2 - 3
+
+Would be represented as:
+
+triangle = [(1, 2, 1), (2, 3, 1), (3, 1 ,1)]
+
+"""
+
+# Non-Eularian, single edge, 1-2
+single = [(1,2,1)]
+
+# Eularian, simple square, 1-2-3-4
+square = [(1,2,1), (2,3,1), (3,4,1), (4,1,1)]
+
+# Semi-Eularian, 2 triangles
+ice_cream = [(1,2,4), (1,3,3), (1,4,5), (2,3,3), (3,4,5)]
+
+# Non-Eularian, 3 triangles
+sailboat = [
     (1,2,4), (1,3,3), (1,5,10), (2,3,2), (2,4,3), (3,4,3), (4,5,9)
 ]
-kite = [  # Semi-Eularian, 2 triangles w/ a tail
-    (1,2,4), (2,3,3), (3,4,2), (2,4,3), (5,4,2), (4,1,3)
-]
 
-clover = [  # Eularian, square w/ parallel edges
+# Semi-Eularian, 2 triangles w/ a tail
+kite = [(1,2,4), (2,3,3), (3,4,2), (2,4,3), (5,4,2), (4,1,3)]
+
+# Eularian, square w/ parallel edges
+clover = [
     (1,2,1), (1,2,2), (2,3,1), (2,3,2), (3,4,1), (3,4,2), (4,1,1), (4,1,2)
 ]
 
@@ -47,7 +64,7 @@ north = [
     (24,25, 3), (25,26, 1), (26,27, 1)
 ]
 
-# Entirety of Pacific Spirit Park
+# Entirety of Pacific Spirit Park!
 pacific_spirit = [
     ( 1, 2, 1), ( 2, 3, 1), ( 3, 4, 1), ( 3,25, 6), ( 2, 4, 1), ( 2,24, 7),
     ( 4, 5, 3), ( 5, 6, 1), ( 5,26, 6), ( 6, 7, 1), ( 6, 8, 1), ( 8, 9,12),
