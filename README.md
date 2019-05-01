@@ -87,6 +87,7 @@ from the root project folder.
 
 ## Graph Format
 
+
 * A graph is defined as a list containing tuples
 * Each tuple in the list represents an edge
 * Edges are defined as `(start node, end node, length)`
@@ -99,3 +100,11 @@ For example, an equilateral triangle like:
  ```
 Could be represented as:
 `triangle = [(1, 2, 1), (2, 3, 1), (3, 1 ,1)]`
+
+If an edge is [directed](https://en.wikipedia.org/wiki/Directed_graph)
+you can add an optional fourth argument, `True`, e.g.
+`(1, 2, 5, True)` for a one-way edge from Node 1 to
+Node 2 of length 5.
+
+
+See [network.py](chinesepostman/network.py) for the actual implementation.
