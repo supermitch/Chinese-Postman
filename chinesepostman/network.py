@@ -8,7 +8,7 @@ class Graph(object):
 
     def __init__(self, data=None):
         self.edges = {}
-        if data:
+        if data:  # data is simply a list of edges
             self.add_edges(data)
 
     def __repr__(self):
@@ -17,7 +17,7 @@ class Graph(object):
     def add_edges(self, edges):
         """ Add a list of edges. """
         for edge in edges:
-            self.add_edge(*edge)
+            self.add_edge(*edge) # edge is a tuple of data
 
     def add_edge(self, *args):
         """ Adds an Edge to our graph. """
