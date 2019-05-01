@@ -84,3 +84,18 @@ python tests/run_tests.py
 ```
 
 from the root project folder.
+
+## Graph Format
+
+* A graph is defined as a list containing tuples
+* Each tuple in the list represents an edge
+* Edges are defined as `(start node, end node, length)`
+
+For example, an equilateral triangle like:
+```
+   1
+  / \
+ 2 - 3
+ ```
+Could be represented as:
+`triangle = [(1, 2, 1), (2, 3, 1), (3, 1 ,1)]`
