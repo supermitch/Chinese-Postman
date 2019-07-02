@@ -72,7 +72,7 @@ Specify which graph to load by adding the graph name:
 python main.py north
 ```
 
-You can find all the graph names in the `data` folder.
+You can find all the graph names in the [data/data.py](data/data.py) file.
 
 
 ## Tests
