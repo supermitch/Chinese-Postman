@@ -63,7 +63,8 @@ Later I will implement an alternative circuit finding method (Hierholzer's?)
 
 ## Usage
 
-This program will run in Python 2.7 and Python 3.4, at least.
+This program will probably run in Python 2.7 and Python 3.4-3.7.
+(Tested recently w/ Python 3.7.2)
 
 Specify which graph to load by adding the graph name:
 
