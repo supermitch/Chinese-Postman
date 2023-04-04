@@ -17,14 +17,16 @@ def setup_args():
     """ Setup argparse to take graph name argument. """
     parser = argparse.ArgumentParser(description='Find an Eularian Cicruit.')
     parser.add_argument('graph', nargs='?', help='Name of graph to load')
+    parser.add_argument('start', nargs='?', help='The staring node. Random if none provided.', type=int)
     args = parser.parse_args()
-    return args.graph
+    return args
 
 
 def main():
     """ Make it so. """
     edges = None
-    graph_name = setup_args()
+    args = setup_args()
+    graph_name = args.graph
     try:
         print('Loading graph: {}'.format(graph_name))
         edges = getattr(data.data, graph_name)
@@ -47,7 +49,7 @@ def main():
         graph = original_graph
 
     print('Attempting to solve Eularian Circuit...')
-    route, attempts = eularian.eularian_path(graph, start=1)
+    route, attempts = eularian.eularian_path(graph, args.start)
     if not route:
         print('\tGave up after <{}> attempts.'.format(attempts))
     else:
