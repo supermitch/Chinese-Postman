@@ -17,7 +17,7 @@ def setup_args():
     """ Setup argparse to take graph name argument. """
     parser = argparse.ArgumentParser(description='Find an Eularian Cicruit.')
     parser.add_argument('graph', nargs='?', help='Name of graph to load')
-    parser.add_argument('start', nargs='?', help='The staring node. Random if none provided.')
+    parser.add_argument('start', nargs='?', help='The staring node. Random if none provided.', type=int)
     args = parser.parse_args()
     return args
 
@@ -48,8 +48,7 @@ def main():
     else:
         graph = original_graph
 
-    # If a starting node was given as an argument, start there. Else pass None and one will be randomly selected.
-    start = int(args.start) if args.start else None
+    start = args.start if args.start else None
     print('Attempting to solve Eularian Circuit...')
     route, attempts = eularian.eularian_path(graph, start=start)
     if not route:
