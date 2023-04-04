@@ -48,9 +48,8 @@ def main():
     else:
         graph = original_graph
 
-    start = args.start if args.start else None
     print('Attempting to solve Eularian Circuit...')
-    route, attempts = eularian.eularian_path(graph, start=start)
+    route, attempts = eularian.eularian_path(graph, args.start)
     if not route:
         print('\tGave up after <{}> attempts.'.format(attempts))
     else:
