@@ -4,7 +4,7 @@ from . import my_math
 
 
 class Graph(object):
-    """ Abstract representation of a graph. """
+    """Abstract representation of a graph."""
 
     def __init__(self, data=None):
         self.edges = {}
@@ -15,16 +15,16 @@ class Graph(object):
         return 'Graph({})'.format(str(self.edges))
 
     def add_edges(self, edges):
-        """ Add a list of edges. """
+        """Add a list of edges."""
         for edge in edges:
-            self.add_edge(*edge) # edge is a tuple of data
+            self.add_edge(*edge)  # edge is a tuple of data
 
     def add_edge(self, *args):
-        """ Adds an Edge to our graph. """
+        """Adds an Edge to our graph."""
         self.edges[len(self.edges)] = Edge(*args)
 
     def remove_edges(self, edges):
-        """ Removes a list of edges. """
+        """Removes a list of edges."""
         for edge in edges:
             if isinstance(edge, int):
                 self.remove_edge(edge)
@@ -32,7 +32,7 @@ class Graph(object):
                 self.remove_edge(*edge.contents)
 
     def remove_edge(self, *args):
-        """ Remove an edge, plus node if it's disconnected. """
+        """Remove an edge, plus node if it's disconnected."""
         if len(args) == 1 and isinstance(args[0], int):
             del self.edges[args[0]]  # Remove by key
         else:
@@ -41,26 +41,28 @@ class Graph(object):
 
     @property
     def nodes(self):
-        """ Return a set of all node indices in this graph. """
-        return set([node for edge in self.edges.values() for node in (edge.head, edge.tail)])
+        """Return a set of all node indices in this graph."""
+        return set(
+            [node for edge in self.edges.values() for node in (edge.head, edge.tail)]
+        )
+
     @property
     def node_keys(self):
-        """ Return a list of all node keys in this graph. """
+        """Return a list of all node keys in this graph."""
         return sorted(self.nodes)
 
     @property
     def node_orders(self):
-        """ Return how many connections a node has. """
+        """Return how many connections a node has."""
         return {x: len(self.edge_options(x)) for x in self.nodes}
 
     @property
     def odd_nodes(self):
-        """ Return a list of odd nodes only. """
+        """Return a list of odd nodes only."""
         return [k for k in self.nodes if not my_math.is_even(self.node_orders[k])]
 
     def node_options(self, node):
-        """ Returns an ascending list of (node, cost) tuples connected
-        to this node. """
+        """Returns an ascending list of (node, cost) tuples connected to this node."""
         options = []
         for edge in self.edges.values():
             if edge.head == node:
@@ -71,25 +73,21 @@ class Graph(object):
 
     @property
     def is_eularian(self):
-        """ Return True if all nodes are of even order. """
+        """Return True if all nodes are of even order."""
         return len(self.odd_nodes) == 0
 
     @property
     def is_semi_eularian(self):
-        """ Return True if exactly 2 nodes are odd. """
+        """Return True if exactly 2 nodes are odd."""
         return len(self.odd_nodes) == 2
 
     @property
     def all_edges(self):
-        """ Returns a list of all edges in this graph. """
+        """Returns a list of all edges in this graph."""
         return list(self.edges.values())
 
     def find_edges(self, head, tail, cost=None, directed=None):
-        """
-        Returns a {key: edge} dictionary of all matching edges.
-
-        Of the given parameters, `cost` and `directed` are optional.
-        """
+        """Returns a {key: edge} dictionary of all matching edges."""
         results = {}
         for key, edge in self.edges.items():
             if not cost and not directed:
@@ -97,8 +95,7 @@ class Graph(object):
                    (tail, head) == (edge.head, edge.tail):
                     results[key] = edge
             elif not directed:
-                if (head, tail, cost) == edge or \
-                   (tail, head, cost) == edge:
+                if (head, tail, cost) == edge or (tail, head, cost) == edge:
                     results[key] = edge
             else:
                 if directed and (head, tail, cost, directed) == edge:
@@ -108,23 +105,24 @@ class Graph(object):
         return results
 
     def find_edge(self, head, tail, cost=None, directed=None):
-        """ Returns the first match for this edge. """
+        """Returns the first match for this edge."""
         matches = self.find_edges(head, tail, cost, directed)
         return dict((matches.popitem(),))  # One result only
 
     def edge_options(self, node):
-        """ Return dictionary of available edges for a given node. """
-        return {k: v for k, v in self.edges.items() \
-                if node in (v.head, v.tail)}
+        """Return dictionary of available edges for a given node."""
+        return {k: v for k, v in self.edges.items() if node in (v.head, v.tail)}
 
     def edge_cost(self, *args):
-        """ Search for this edge. """
-        weight = min([edge.weight for edge in self.find_edges(*args).values() if edge.weight])
+        """Search for this edge."""
+        weight = min(
+            [edge.weight for edge in self.find_edges(*args).values() if edge.weight]
+        )
         return weight
 
     @property
     def total_cost(self):
-        """ Return the total cost of this graph. """
+        """Return the total cost of this graph."""
         return sum(x.weight for x in self.edges.values() if x.weight)
 
     def is_bridge(self, key):
@@ -134,7 +132,6 @@ class Graph(object):
         Given an edge, utilize depth-first search to visit all
         connected nodes. If DFS reaches all unvisited nodes, then the given
         edge must not be a bridge.
-
         """
         graph = copy.deepcopy(self)
 
@@ -148,8 +145,7 @@ class Graph(object):
             if start not in stack:
                 stack.append(start)
             visited.add(start)
-            nodes = [x for x in graph.node_options(start) \
-                     if x not in visited]
+            nodes = [x for x in graph.node_options(start) if x not in visited]
             if nodes:
                 start = nodes[0]  # Ascending
             else:  # Dead end
@@ -169,7 +165,8 @@ class Graph(object):
 
 
 class Edge(object):
-    """ A connection between nodes. """
+    """A connection between nodes."""
+
     def __init__(self, head=None, tail=None, weight=0, directed=False):
         self.head = head  # Start node
         self.tail = tail  # End node
@@ -188,14 +185,17 @@ class Edge(object):
         return hash(self.contents)
 
     def __repr__(self):
-        return 'Edge({}, {}, {}, {})'.format(self.head, self.tail, self.weight, self.directed)
+        return 'Edge({}, {}, {}, {})'.format(
+            self.head, self.tail, self.weight, self.directed
+        )
 
     def __len__(self):
-        """ How many attribs we have. Kinda weird... """
-        return len([x for x in (self.head, self.tail, self.weight, self.directed) if x is not None])
+        """How many attribs we have. Kinda weird..."""
+        attribs = (self.head, self.tail, self.weight, self.directed)
+        return len([x for x in attribs if x is not None])
 
     def end(self, node):
-        """ Find the opposite end of this edge, given a node. """
+        """Find the opposite end of this edge, given a node."""
         if node == self.head:
             return self.tail
         elif node == self.tail:
@@ -205,7 +205,7 @@ class Edge(object):
 
     @property
     def contents(self):
-        """ A tuple containing edge contents. """
+        """A tuple containing edge contents."""
         return (self.head, self.tail, self.weight, self.directed)
 
 

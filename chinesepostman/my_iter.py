@@ -1,4 +1,5 @@
-""" Iterator related helper functions. """
+"""Iterator related helper functions."""
+
 
 def flatten_tuples(iterable):
     """
@@ -7,7 +8,8 @@ def flatten_tuples(iterable):
     """
     return sum(iterable, ())
 
+
 def all_unique(iterable):
-    """ Returns True if all items in an iterable are unique. """
+    """Returns True if all items in an iterable are unique."""
     seen = set()
     return not any(x in seen or seen.add(x) for x in iterable)

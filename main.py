@@ -14,16 +14,21 @@ from chinesepostman import eularian, network
 
 
 def setup_args():
-    """ Setup argparse to take graph name argument. """
+    """Setup argparse to take graph name argument."""
     parser = argparse.ArgumentParser(description='Find an Eularian Cicruit.')
     parser.add_argument('graph', nargs='?', help='Name of graph to load')
-    parser.add_argument('start', nargs='?', help='The staring node. Random if none provided.', type=int)
+    parser.add_argument(
+        'start',
+        nargs='?',
+        type=int,
+        help='The staring node. Random if none provided.'
+    )
     args = parser.parse_args()
     return args
 
 
 def main():
-    """ Make it so. """
+    """Make it so."""
     edges = None
     args = setup_args()
     graph_name = args.graph
@@ -31,9 +36,11 @@ def main():
         print('Loading graph: {}'.format(graph_name))
         edges = getattr(data.data, graph_name)
     except (AttributeError, TypeError):
-        print('\nInvalid graph name. Available graphs:\n\t{}\n'.format(
-            '\n\t'.join([x for x in dir(data.data)
-            if not x.startswith('__')])))
+        available = [x for x in dir(data.data) if not x.startswith('__')]
+        print(
+            '\nInvalid graph name.'
+            ' Available graphs:\n\t{}\n'.format('\n\t'.join(available))
+        )
         sys.exit()
 
     original_graph = network.Graph(edges)
@@ -53,7 +60,7 @@ def main():
     if not route:
         print('\tGave up after <{}> attempts.'.format(attempts))
     else:
-        print('\tSolved in <{}> attempts'.format(attempts, route))
+        print('\tSolved in <{}> attempts'.format(attempts))
         print('Solution: (<{}> edges)'.format(len(route) - 1))
         print('\t{}'.format(route))
 
