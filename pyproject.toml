@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 90
+skip-string-normalization = true
+
+[tool.isort]
+line_length = 90
+force_single_line = true
+profile = "black"
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+
+[tool.coverage.run]
+branch = true
+source = [
+    ".",  # Ensures that even untested file are included
+]
+omit = [  # Optionally omit entire folders
+    "./tests/*",
+]
+
+[tool.coverage.report]
+show_missing = false  # Optionally show missing line numbers
+skip_empty = true  # Skip files without code
